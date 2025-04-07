@@ -4,6 +4,7 @@ from skimage.filters import threshold_otsu, sobel
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from skimage.util import random_noise
 
 # ตั้งชื่อแอป
 st.title("Image Processing with scikit-image")
@@ -153,3 +154,27 @@ if selected_image_url:
         st.markdown("#### B (น้ำเงิน)")
         b_enhanced = enhanced_rgb[:, :, 2]
         st.dataframe(pd.DataFrame(b_enhanced))
+
+    # =============================
+    # Image Processing: Adding Noise
+    # =============================
+    st.subheader("Image Processing: การเพิ่ม Noise ให้ภาพสี")
+    
+    noise_type = st.selectbox("เลือกประเภท Noise", ["gaussian", "salt", "pepper", "s&p"])
+    
+    # สำหรับ gaussian เท่านั้นถึงใช้ค่า variance ได้
+    if noise_type == "gaussian":
+        var = st.slider("ความรุนแรงของ Gaussian Noise (variance)", 0.001, 0.1, 0.01, step=0.001)
+        noisy_image = random_noise(enhanced_rgb, mode=noise_type, var=var)
+    else:
+        amount = st.slider("ระดับของ Noise", 0.01, 0.2, 0.05, step=0.01)
+        noisy_image = random_noise(enhanced_rgb, mode=noise_type, amount=amount)
+    
+    # แปลงจาก float [0,1] เป็น uint8 [0,255]
+    noisy_image_uint8 = (np.clip(noisy_image, 0, 1) * 255).astype(np.uint8)
+    
+    # แสดงภาพ
+    st.subheader("ภาพหลังจากเพิ่ม Noise")
+    st.image(noisy_image_uint8, use_container_width=True)
+    
+
