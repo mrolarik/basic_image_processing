@@ -270,6 +270,53 @@ if selected_image_url:
     
     st.pyplot(fig_hist)
 
+    # ===================================
+    # Show RGB Histograms (in English)
+    # ===================================
+    st.subheader("Histogram by Color Channel (after Contrast Enhancement)")
+    
+    # Extract RGB channels
+    r_channel = contrast_image[:, :, 0].flatten()
+    g_channel = contrast_image[:, :, 1].flatten()
+    b_channel = contrast_image[:, :, 2].flatten()
+    
+    # Create 3 columns for R, G, B histograms
+    hist_cols = st.columns(3)
+    
+    # Red Channel
+    with hist_cols[0]:
+        st.markdown("#### Red Channel (R)")
+        fig_r, ax_r = plt.subplots()
+        ax_r.hist(r_channel, bins=256, color='red')
+        ax_r.set_xlim([0, 255])
+        ax_r.set_title("Histogram of Red Channel")
+        ax_r.set_xlabel("Pixel Intensity")
+        ax_r.set_ylabel("Pixel Count")
+        st.pyplot(fig_r)
+    
+    # Green Channel
+    with hist_cols[1]:
+        st.markdown("#### Green Channel (G)")
+        fig_g, ax_g = plt.subplots()
+        ax_g.hist(g_channel, bins=256, color='green')
+        ax_g.set_xlim([0, 255])
+        ax_g.set_title("Histogram of Green Channel")
+        ax_g.set_xlabel("Pixel Intensity")
+        ax_g.set_ylabel("Pixel Count")
+        st.pyplot(fig_g)
+    
+    # Blue Channel
+    with hist_cols[2]:
+        st.markdown("#### Blue Channel (B)")
+        fig_b, ax_b = plt.subplots()
+        ax_b.hist(b_channel, bins=256, color='blue')
+        ax_b.set_xlim([0, 255])
+        ax_b.set_title("Histogram of Blue Channel")
+        ax_b.set_xlabel("Pixel Intensity")
+        ax_b.set_ylabel("Pixel Count")
+        st.pyplot(fig_b)
+
+
 
 
     
