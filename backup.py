@@ -9,6 +9,9 @@ from skimage.restoration import denoise_tv_chambolle
 from scipy.ndimage import gaussian_filter, median_filter
 from skimage import exposure
 from scipy.ndimage import gaussian_filter
+from skimage.filters import unsharp_mask
+import matplotlib.pyplot as plt
+
 
 
 # ตั้งชื่อแอป
@@ -244,43 +247,124 @@ if selected_image_url:
     st.subheader("ภาพหลังปรับความคมชัด (Contrast Enhanced)")
     st.image(contrast_image, use_container_width=True)
 
+
     # ===================================
-    # Image Processing: Blur Image
+    # แสดง Histogram ของภาพ RGB หลังปรับ Contrast
     # ===================================
-    st.subheader("Image Processing: เบลอภาพ (Blur)")
+    st.subheader("Histogram ของภาพหลังปรับความคมชัด (Contrast Enhanced)")
     
-    blur_sigma = st.slider("ปรับระดับความเบลอ (Gaussian σ)", 0.5, 5.0, 1.0, step=0.5)
+    # ดึงแต่ละช่องสี
+    r_channel = contrast_image[:, :, 0].flatten()
+    g_channel = contrast_image[:, :, 1].flatten()
+    b_channel = contrast_image[:, :, 2].flatten()
     
-    # ฟังก์ชันเบลอภาพ RGB ทีละ channel
-    def blur_rgb(image, sigma):
-        blurred = np.zeros_like(image, dtype=np.float32)
-        for c in range(3):
-            blurred[:, :, c] = gaussian_filter(image[:, :, c], sigma=sigma)
-        return np.clip(blurred / 255.0, 0, 1)  # normalize for display
+    # วาดกราฟ histogram
+    fig_hist, ax_hist = plt.subplots()
+    ax_hist.hist(r_channel, bins=256, color='red', alpha=0.5, label='R')
+    ax_hist.hist(g_channel, bins=256, color='green', alpha=0.5, label='G')
+    ax_hist.hist(b_channel, bins=256, color='blue', alpha=0.5, label='B')
+    ax_hist.set_title("Histogram of Pixel Values (R, G, B)")
+    ax_hist.set_xlabel("Intensity")
+    ax_hist.set_ylabel("Number of Pixel")
+    ax_hist.legend()
     
-    # เบลอภาพสี
-    blurred_image = blur_rgb(enhanced_rgb, blur_sigma)
-    blurred_image_uint8 = (blurred_image * 255).astype(np.uint8)
-    
-    # แสดงภาพก่อน/หลังเบลอ
-    st.subheader("เปรียบเทียบภาพก่อนและหลังเบลอ")
-    blur_cols = st.columns(2)
-    
-    with blur_cols[0]:
-        st.markdown("#### ก่อนเบลอ")
-        st.image(enhanced_rgb, use_container_width=True)
-    
-    with blur_cols[1]:
-        st.markdown("#### หลังเบลอ")
-        st.image(blurred_image_uint8, use_container_width=True)
-    
+    st.pyplot(fig_hist)
 
+    # ===================================
+    # Show RGB Histograms (in English)
+    # ===================================
+    st.subheader("Histogram by Color Channel (after Contrast Enhancement)")
     
+    # Extract RGB channels
+    r_channel = contrast_image[:, :, 0].flatten()
+    g_channel = contrast_image[:, :, 1].flatten()
+    b_channel = contrast_image[:, :, 2].flatten()
     
-
-
-   
-
-
+    # Create 3 columns for R, G, B histograms
+    hist_cols = st.columns(3)
     
+    # Red Channel
+    with hist_cols[0]:
+        st.markdown("#### Red Channel (R)")
+        fig_r, ax_r = plt.subplots()
+        ax_r.hist(r_channel, bins=256, color='red')
+        ax_r.set_xlim([0, 255])
+        ax_r.set_title("Histogram of Red Channel")
+        ax_r.set_xlabel("Pixel Intensity")
+        ax_r.set_ylabel("Pixel Count")
+        st.pyplot(fig_r)
+    
+    # Green Channel
+    with hist_cols[1]:
+        st.markdown("#### Green Channel (G)")
+        fig_g, ax_g = plt.subplots()
+        ax_g.hist(g_channel, bins=256, color='green')
+        ax_g.set_xlim([0, 255])
+        ax_g.set_title("Histogram of Green Channel")
+        ax_g.set_xlabel("Pixel Intensity")
+        ax_g.set_ylabel("Pixel Count")
+        st.pyplot(fig_g)
+    
+    # Blue Channel
+    with hist_cols[2]:
+        st.markdown("#### Blue Channel (B)")
+        fig_b, ax_b = plt.subplots()
+        ax_b.hist(b_channel, bins=256, color='blue')
+        ax_b.set_xlim([0, 255])
+        ax_b.set_title("Histogram of Blue Channel")
+        ax_b.set_xlabel("Pixel Intensity")
+        ax_b.set_ylabel("Pixel Count")
+        st.pyplot(fig_b)
 
+
+    # ===================================
+    # Show RGB Line Graph (Intensity Distribution)
+    # ===================================
+    st.subheader("Line Graph by Color Channel (after Contrast Enhancement)")
+    
+    # Extract each channel
+    r_channel = contrast_image[:, :, 0].flatten()
+    g_channel = contrast_image[:, :, 1].flatten()
+    b_channel = contrast_image[:, :, 2].flatten()
+    
+    # Calculate histogram counts manually
+    r_counts, _ = np.histogram(r_channel, bins=256, range=(0, 255))
+    g_counts, _ = np.histogram(g_channel, bins=256, range=(0, 255))
+    b_counts, _ = np.histogram(b_channel, bins=256, range=(0, 255))
+    x = np.arange(256)
+    
+    # Create 3 columns for line graphs
+    line_cols = st.columns(3)
+    
+    # Red Line Graph
+    with line_cols[0]:
+        st.markdown("#### Red Channel (R)")
+        fig_r, ax_r = plt.subplots()
+        ax_r.plot(x, r_counts, color='red')
+        ax_r.set_xlim([0, 255])
+        ax_r.set_title("Line Graph of Red Channel")
+        ax_r.set_xlabel("Pixel Intensity")
+        ax_r.set_ylabel("Pixel Count")
+        st.pyplot(fig_r)
+    
+    # Green Line Graph
+    with line_cols[1]:
+        st.markdown("#### Green Channel (G)")
+        fig_g, ax_g = plt.subplots()
+        ax_g.plot(x, g_counts, color='green')
+        ax_g.set_xlim([0, 255])
+        ax_g.set_title("Line Graph of Green Channel")
+        ax_g.set_xlabel("Pixel Intensity")
+        ax_g.set_ylabel("Pixel Count")
+        st.pyplot(fig_g)
+    
+    # Blue Line Graph
+    with line_cols[2]:
+        st.markdown("#### Blue Channel (B)")
+        fig_b, ax_b = plt.subplots()
+        ax_b.plot(x, b_counts, color='blue')
+        ax_b.set_xlim([0, 255])
+        ax_b.set_title("Line Graph of Blue Channel")
+        ax_b.set_xlabel("Pixel Intensity")
+        ax_b.set_ylabel("Pixel Count")
+        st.pyplot(fig_b)
