@@ -317,6 +317,60 @@ if selected_image_url:
         st.pyplot(fig_b)
 
 
+    # ===================================
+    # Show RGB Line Graph (Intensity Distribution)
+    # ===================================
+    st.subheader("Line Graph by Color Channel (after Contrast Enhancement)")
+    
+    # Extract each channel
+    r_channel = contrast_image[:, :, 0].flatten()
+    g_channel = contrast_image[:, :, 1].flatten()
+    b_channel = contrast_image[:, :, 2].flatten()
+    
+    # Calculate histogram counts manually
+    r_counts, _ = np.histogram(r_channel, bins=256, range=(0, 255))
+    g_counts, _ = np.histogram(g_channel, bins=256, range=(0, 255))
+    b_counts, _ = np.histogram(b_channel, bins=256, range=(0, 255))
+    x = np.arange(256)
+    
+    # Create 3 columns for line graphs
+    line_cols = st.columns(3)
+    
+    # Red Line Graph
+    with line_cols[0]:
+        st.markdown("#### Red Channel (R)")
+        fig_r, ax_r = plt.subplots()
+        ax_r.plot(x, r_counts, color='red')
+        ax_r.set_xlim([0, 255])
+        ax_r.set_title("Line Graph of Red Channel")
+        ax_r.set_xlabel("Pixel Intensity")
+        ax_r.set_ylabel("Pixel Count")
+        st.pyplot(fig_r)
+    
+    # Green Line Graph
+    with line_cols[1]:
+        st.markdown("#### Green Channel (G)")
+        fig_g, ax_g = plt.subplots()
+        ax_g.plot(x, g_counts, color='green')
+        ax_g.set_xlim([0, 255])
+        ax_g.set_title("Line Graph of Green Channel")
+        ax_g.set_xlabel("Pixel Intensity")
+        ax_g.set_ylabel("Pixel Count")
+        st.pyplot(fig_g)
+    
+    # Blue Line Graph
+    with line_cols[2]:
+        st.markdown("#### Blue Channel (B)")
+        fig_b, ax_b = plt.subplots()
+        ax_b.plot(x, b_counts, color='blue')
+        ax_b.set_xlim([0, 255])
+        ax_b.set_title("Line Graph of Blue Channel")
+        ax_b.set_xlabel("Pixel Intensity")
+        ax_b.set_ylabel("Pixel Count")
+        st.pyplot(fig_b)
+
+
+
 
 
     
