@@ -63,11 +63,6 @@ if selected_image_url:
     # แปลงเป็นภาพสีเทา
     gray_image = color.rgb2gray(image)
 
-    # ปรับความสว่าง (Brightness Enhancement)
-    st.subheader("Image Enhancement: ปรับความสว่างของภาพสีเทา")
-    brightness_factor = st.slider("ปรับความสว่าง", -0.20, 0.20, 0.0, step=0.01)
-    enhanced_gray = np.clip(gray_image + brightness_factor, 0, 1)
-
     # สร้างภาพขาวดำโดยใช้ threshold
     thresh = threshold_otsu(gray_image)
     binary_image = gray_image > thresh
@@ -114,6 +109,11 @@ if selected_image_url:
     edge_df = pd.DataFrame(edge_image[:10, :10])
     st.dataframe(edge_df.style.format("{:.3f}"))
 
+    # ปรับความสว่าง (Brightness Enhancement)
+    st.subheader("Image Enhancement: ปรับความสว่างของภาพสีเทา")
+    brightness_factor = st.slider("ปรับความสว่าง", -0.20, 0.20, 0.0, step=0.01)
+    enhanced_gray = np.clip(gray_image + brightness_factor, 0, 1)
+    
     # แสดงภาพสีเทาหลังปรับ brightness
     st.subheader("ภาพสีเทาหลังปรับความสว่าง (Enhanced Gray Image)")
     fig4, ax4 = plt.subplots()
