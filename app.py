@@ -208,8 +208,18 @@ if selected_image_url:
     restored_image_uint8 = (restored_image * 255).astype(np.uint8)
     
     # แสดงภาพที่ผ่านการฟื้นฟู
-    st.subheader("ภาพที่ผ่านการฟื้นฟู (Restored Image)")
-    st.image(restored_image_uint8, use_container_width=True)
+   st.subheader("เปรียบเทียบภาพก่อนและหลังการฟื้นฟู")
+
+    compare_cols = st.columns(2)
+    
+    with compare_cols[0]:
+        st.markdown("#### ก่อนฟื้นฟู (Noisy Image)")
+        st.image(noisy_image_uint8, use_column_width=True)
+    
+    with compare_cols[1]:
+        st.markdown("#### หลังฟื้นฟู (Restored Image)")
+        st.image(restored_image_uint8, use_column_width=True)
+
 
     
 
