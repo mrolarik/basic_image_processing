@@ -29,6 +29,33 @@ for i, (name, url) in enumerate(image_urls.items()):
 if selected_image_url:
     # โหลดภาพ
     image = io.imread(selected_image_url)
+
+    # ตรวจสอบว่าภาพมี 3 ช่องสี
+    if image.ndim == 3 and image.shape[2] == 3:
+        # ดึงช่อง R, G, B
+        R = image[:, :, 0]
+        G = image[:, :, 1]
+        B = image[:, :, 2]
+
+        st.subheader("ตารางค่าพิกเซลของภาพสี (R, G, B)")
+
+        rgb_cols = st.columns(3)
+        with rgb_cols[0]:
+            st.markdown("#### ค่า R (แดง)")
+            r_df = pd.DataFrame(R)
+            st.dataframe(r_df)
+
+        with rgb_cols[1]:
+            st.markdown("#### ค่า G (เขียว)")
+            g_df = pd.DataFrame(G)
+            st.dataframe(g_df)
+
+        with rgb_cols[2]:
+            st.markdown("#### ค่า B (น้ำเงิน)")
+            b_df = pd.DataFrame(B)
+            st.dataframe(b_df)
+
+    # แปลงเป็นภาพสีเทา
     gray_image = color.rgb2gray(image)
 
     # สร้างภาพขาวดำโดยใช้ threshold
@@ -46,7 +73,6 @@ if selected_image_url:
         ax1.axis('off')
         st.pyplot(fig1)
 
-        # แสดงตารางค่าพิกเซล (0–155)
         st.markdown("ตารางค่าพิกเซล (สีเทา) [0–155]")
         gray_scaled = (gray_image * 155).astype(int)
         gray_df = pd.DataFrame(gray_scaled)
@@ -59,7 +85,6 @@ if selected_image_url:
         ax2.axis('off')
         st.pyplot(fig2)
 
-        # แสดงตารางค่าพิกเซล (0 หรือ 1)
         st.markdown("ตารางค่าพิกเซล (ขาวดำ) [0 หรือ 1]")
         binary_int = binary_image.astype(int)
         binary_df = pd.DataFrame(binary_int)
