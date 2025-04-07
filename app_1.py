@@ -23,8 +23,14 @@ if st.button("คลิกเพื่อแสดงรูปภาพ"):
 if st.session_state.image is not None:
     image = st.session_state.image
 
-    st.subheader("ภาพต้นฉบับที่โหลดแล้ว")
-    st.image(image, caption="ภาพต้นฉบับ", use_container_width=True)
+    st.subheader("ภาพต้นฉบับที่โหลดแล้ว (พร้อมแกน X, Y)")
+
+    fig, ax = plt.subplots()
+    ax.imshow(image)
+    ax.set_title("Original Image")
+    ax.set_xlabel("X (Column)")
+    ax.set_ylabel("Y (Row)")
+    st.pyplot(fig)
 
     st.subheader("แสดงบางส่วนของภาพ (Slice Image)")
 
