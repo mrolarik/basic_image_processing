@@ -1,5 +1,9 @@
+#https://upload.wikimedia.org/wikipedia/commons/b/bf/Bulldog_inglese.jpg
+
+
 import streamlit as st
 from skimage import io
+import matplotlib.pyplot as plt
 
 # ตั้งชื่อแอป
 st.title("Image Processing with scikit-image")
@@ -7,9 +11,11 @@ st.title("Image Processing with scikit-image")
 # URL ของภาพตัวอย่าง
 image_url = "https://upload.wikimedia.org/wikipedia/commons/b/bf/Bulldog_inglese.jpg"
 
-# แสดงภาพตัวอย่างตั้งแต่ต้น (แบบ thumbnail)
-st.subheader("ตัวอย่างภาพ")
-st.image(image_url, caption="ภาพตัวอย่าง", width=200)
+# แสดงภาพตัวอย่างแบบ thumbnail
+st.subheader("ภาพตัวอย่าง")
+thumb_col = st.columns([1, 2, 1])  # จัดตรงกลาง
+with thumb_col[1]:
+    st.image(image_url, caption="ตัวอย่างรูปภาพ", width=200)
 
 # เตรียม session_state เพื่อเก็บภาพ
 if 'image' not in st.session_state:
@@ -24,7 +30,6 @@ if st.session_state.image is not None:
     image = st.session_state.image
 
     st.subheader("ภาพต้นฉบับที่โหลดแล้ว (พร้อมแกน X, Y)")
-
     fig, ax = plt.subplots()
     ax.imshow(image)
     ax.set_title("Original Image")
@@ -45,3 +50,4 @@ if st.session_state.image is not None:
 
     st.subheader("ภาพบางส่วนที่เลือก")
     st.image(sliced_image, caption="ภาพบางส่วน", use_container_width=True)
+
