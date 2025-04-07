@@ -89,3 +89,14 @@ if selected_image_url:
         binary_int = binary_image.astype(int)
         binary_df = pd.DataFrame(binary_int)
         st.dataframe(binary_df)
+
+    # แสดงภาพขอบ
+    st.subheader("ภาพขอบ (Edge Image)")
+    fig3, ax3 = plt.subplots()
+    ax3.imshow(edge_image, cmap='gray')
+    ax3.axis('off')
+    st.pyplot(fig3)
+
+    st.markdown("ตารางค่าพิกเซล (ขอบ) [ค่าความต่างระหว่างพิกเซล]")
+    edge_df = pd.DataFrame(edge_image[:10, :10])
+    st.dataframe(edge_df.style.format("{:.3f}"))
