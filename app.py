@@ -101,5 +101,5 @@ if selected_image_url:
     st.pyplot(fig3)
 
     st.markdown("ตารางค่าพิกเซล (ขอบ) [ค่าความต่างระหว่างพิกเซล]")
-    edge_df = pd.DataFrame(edge_image[:10, :10])
+    edge_df = pd.DataFrame(edge_image)
     st.dataframe(edge_df.style.format("{:.3f}"))
