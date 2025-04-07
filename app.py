@@ -209,7 +209,7 @@ if selected_image_url:
     
     # แสดงภาพที่ผ่านการฟื้นฟู
     st.subheader("ภาพที่ผ่านการฟื้นฟู (Restored Image)")
-    st.image(restored_image_uint8, use_column_width=True)
+    st.image(restored_image_uint8, use_container_width=True)
 
     
 
