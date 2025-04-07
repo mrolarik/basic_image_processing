@@ -26,11 +26,6 @@ def resize_images_to_match(img1, img2):
     return resized1, resized2
 
 
-
-import streamlit as st
-import matplotlib.pyplot as plt
-from skimage import io
-
 # ตั้งชื่อแอป
 st.title("Image Processing with scikit-image")
 
@@ -45,13 +40,11 @@ st.subheader("ภาพตัวอย่าง (เลือก 1 รูป)")
 
 # แสดง thumbnails แบบ 3 คอลัมน์
 cols = st.columns(3)
-selected_image_url = None
-
 for idx, (label, url) in enumerate(image_options.items()):
     with cols[idx]:
         st.image(url, caption=label, width=200)
         if st.button(f"เลือก {label}"):
-            st.session_state.image = io.imread(url)
+            st.session_state.image = load_image_from_url(url)
 
 # ถ้ามีภาพที่โหลดแล้ว
 if 'image' in st.session_state and st.session_state.image is not None:
@@ -78,8 +71,6 @@ if 'image' in st.session_state and st.session_state.image is not None:
 
     st.subheader("ภาพบางส่วนที่เลือก")
     st.image(sliced_image, caption="ภาพบางส่วน", use_container_width=True)
-
-
 
 
 # ------------------------------
