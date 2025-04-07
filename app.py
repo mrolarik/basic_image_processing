@@ -369,17 +369,3 @@ if selected_image_url:
         ax_b.set_ylabel("Pixel Count")
         st.pyplot(fig_b)
 
-
-
-
-
-
-    
-    
-
-
-   
-
-
-    
-
