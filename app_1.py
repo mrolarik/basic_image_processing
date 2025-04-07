@@ -59,8 +59,8 @@ st.title("Image Blending with scikit-image")
 
 # URLs ของภาพ
 image_urls = {
-    "ภาพที่ 1": "https://upload.wikimedia.org/wikipedia/commons/b/bf/Bulldog_inglese.jpg",
-    "ภาพที่ 2": "https://vetmarlborough.co.nz/wp-content/uploads/old-cats.jpg"
+    "ภาพที่ 1": "https://www.alleycat.org/wp-content/uploads/2019/03/FELV-cat.jpg",
+    "ภาพที่ 2": "https://cdn.britannica.com/39/226539-050-D21D7721/Portrait-of-a-cat-with-whiskers-visible.jpg"
 }
 
 # แสดงภาพ thumbnail
