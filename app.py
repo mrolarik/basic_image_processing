@@ -3,6 +3,7 @@ from skimage import io, color
 from skimage.filters import threshold_otsu
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 # ตั้งชื่อแอป
 st.title("Image Processing with scikit-image")
@@ -45,6 +46,11 @@ if selected_image_url:
         ax1.axis('off')
         st.pyplot(fig1)
 
+        # แสดงตารางค่าพิกเซลของภาพสีเทา
+        st.markdown("ตารางค่าพิกเซล (สีเทา) [ค่าระหว่าง 0 ถึง 1]")
+        gray_df = pd.DataFrame(gray_image[:10, :10])  # แสดง 10x10 แรก
+        st.dataframe(gray_df.style.format("{:.2f}"))
+
     with col2:
         st.markdown("### ภาพขาวดำ")
         fig2, ax2 = plt.subplots()
@@ -52,3 +58,7 @@ if selected_image_url:
         ax2.axis('off')
         st.pyplot(fig2)
 
+        # แสดงตารางค่าพิกเซลของภาพขาวดำ
+        st.markdown("ตารางค่าพิกเซล (ขาวดำ) [True/False]")
+        binary_df = pd.DataFrame(binary_image[:10, :10])
+        st.dataframe(binary_df)
