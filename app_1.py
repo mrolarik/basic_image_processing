@@ -1,10 +1,8 @@
-#https://upload.wikimedia.org/wikipedia/commons/b/bf/Bulldog_inglese.jpg
-
-
 import streamlit as st
 from skimage import io, img_as_float
 import numpy as np
 import matplotlib.pyplot as plt
+from skimage.transform import resize
 
 from PIL import Image
 import requests
@@ -14,6 +12,16 @@ def load_image_from_url(url):
     response = requests.get(url)
     img = Image.open(BytesIO(response.content)).convert("RGB")
     return np.array(img)
+
+def resize_images_to_match(img1, img2):
+    # หาขนาดเล็กสุดร่วมกัน
+    target_shape = (
+        min(img1.shape[0], img2.shape[0]),
+        min(img1.shape[1], img2.shape[1])
+    )
+    resized1 = resize(img1, (*target_shape, 3), anti_aliasing=True)
+    resized2 = resize(img2, (*target_shape, 3), anti_aliasing=True)
+    return resized1, resized2
 
 
 
@@ -64,17 +72,40 @@ if st.session_state.image is not None:
     st.image(sliced_image, caption="ภาพบางส่วน", use_container_width=True)
 
 
-# ตั้งชื่อแอป
+
+# ------------------------------
+# ฟังก์ชันโหลดภาพจาก URL
+# ------------------------------
+def load_image_from_url(url):
+    response = requests.get(url)
+    img = Image.open(BytesIO(response.content)).convert("RGB")
+    return np.array(img)
+
+# ------------------------------
+# ฟังก์ชัน resize ภาพให้มีขนาดเท่ากัน
+# ------------------------------
+def resize_images_to_match(img1, img2):
+    target_shape = (
+        min(img1.shape[0], img2.shape[0]),
+        min(img1.shape[1], img2.shape[1])
+    )
+    resized1 = resize(img1, (*target_shape, 3), anti_aliasing=True)
+    resized2 = resize(img2, (*target_shape, 3), anti_aliasing=True)
+    return resized1, resized2
+
+# ------------------------------
+# เริ่มต้นแอป
+# ------------------------------
 st.title("Image Blending with scikit-image")
 
 # URLs ของภาพ
 image_urls = {
-    "ภาพที่ 1": "https://www.alleycat.org/wp-content/uploads/2019/03/FELV-cat.jpg",
-    "ภาพที่ 2": "https://cdn.britannica.com/39/226539-050-D21D7721/Portrait-of-a-cat-with-whiskers-visible.jpg"
+    "Image 1": "https://www.alleycat.org/wp-content/uploads/2019/03/FELV-cat.jpg",
+    "Image 2": "https://cdn.britannica.com/39/226539-050-D21D7721/Portrait-of-a-cat-with-whiskers-visible.jpg"
 }
 
 # แสดงภาพ thumbnail
-st.subheader("ภาพตัวอย่าง")
+st.subheader("Sample Images")
 thumb_cols = st.columns(2)
 for i, (name, url) in enumerate(image_urls.items()):
     with thumb_cols[i]:
@@ -86,31 +117,26 @@ if 'blend_image1' not in st.session_state:
     st.session_state.blend_image2 = None
 
 # ปุ่มสำหรับโหลดภาพ
-if st.button("โหลดและแสดงภาพเพื่อทำการ Blend"):
-    st.session_state.blend_image1 = load_image_from_url(image_urls["ภาพที่ 1"])
-    st.session_state.blend_image2 = load_image_from_url(image_urls["ภาพที่ 2"])
-
+if st.button("Load and Blend Images"):
+    st.session_state.blend_image1 = load_image_from_url(image_urls["Image 1"])
+    st.session_state.blend_image2 = load_image_from_url(image_urls["Image 2"])
 
 # ถ้ามีภาพแล้ว
 if st.session_state.blend_image1 is not None and st.session_state.blend_image2 is not None:
+    # แปลงเป็น float และ resize ให้เท่ากัน
     img1 = img_as_float(st.session_state.blend_image1)
     img2 = img_as_float(st.session_state.blend_image2)
+    img1, img2 = resize_images_to_match(img1, img2)
 
-    # ปรับขนาดให้เท่ากัน (ใช้แค่ภาพขนาดเท่ากัน)
-    min_height = min(img1.shape[0], img2.shape[0])
-    min_width = min(img1.shape[1], img2.shape[1])
-    img1 = img1[:min_height, :min_width]
-    img2 = img2[:min_height, :min_width]
+    st.subheader("Blending Options")
+    blend_mode = st.selectbox("Select Blend Mode", ["Simple Average", "Weighted Average", "Difference", "Multiply"])
 
-    st.subheader("เลือกวิธีการ Blend")
-
-    blend_mode = st.selectbox("เลือกรูปแบบการ Blend", ["Simple Average", "Weighted Average", "Difference", "Multiply"])
-
+    # เลือกวิธี blend
     if blend_mode == "Simple Average":
         blended = (img1 + img2) / 2
 
     elif blend_mode == "Weighted Average":
-        alpha = st.slider("ค่า Weight ของภาพที่ 1 (alpha)", 0.0, 1.0, 0.5)
+        alpha = st.slider("Alpha (weight for Image 1)", 0.0, 1.0, 0.5)
         blended = alpha * img1 + (1 - alpha) * img2
 
     elif blend_mode == "Difference":
@@ -119,11 +145,14 @@ if st.session_state.blend_image1 is not None and st.session_state.blend_image2 i
     elif blend_mode == "Multiply":
         blended = img1 * img2
 
+    # ปรับค่าพิกเซลไม่ให้เกินขอบเขต
     blended = np.clip(blended, 0, 1)
 
-    # แสดงผล
-    st.subheader("ภาพหลังการ Blend")
+    # แสดงภาพผลลัพธ์
+    st.subheader("Blended Image Result")
     fig, ax = plt.subplots()
     ax.imshow(blended)
-    ax.set_axis_off()
+    ax.set_title(f"Blend Mode: {blend_mode}")
+    ax.axis('off')
     st.pyplot(fig)
+
