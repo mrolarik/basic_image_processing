@@ -109,12 +109,11 @@ if selected_image_url:
     edge_df = pd.DataFrame(edge_image[:10, :10])
     st.dataframe(edge_df.style.format("{:.3f}"))
 
-    # ปรับความสว่าง (Brightness Enhancement)
+    # ปรับความสว่าง (Brightness Enhancement) - Grayscale
     st.subheader("Image Enhancement: ปรับความสว่างของภาพสีเทา")
     brightness_factor = st.slider("ปรับความสว่าง", -0.20, 0.20, 0.0, step=0.01)
     enhanced_gray = np.clip(gray_image + brightness_factor, 0, 1)
-    
-    # แสดงภาพสีเทาหลังปรับ brightness
+
     st.subheader("ภาพสีเทาหลังปรับความสว่าง (Enhanced Gray Image)")
     fig4, ax4 = plt.subplots()
     ax4.imshow(enhanced_gray, cmap='gray')
@@ -123,5 +122,34 @@ if selected_image_url:
 
     st.markdown("ตารางค่าพิกเซล (ภาพสีเทาหลังปรับ) [0–155]")
     enhanced_gray_scaled = (enhanced_gray * 155).astype(int)
-    enhanced_gray_df = pd.DataFrame(enhanced_gray_scaled)
+    enhanced_gray_df = pd.DataFrame(enhanced_gray_scaled[:10, :10])
     st.dataframe(enhanced_gray_df)
+
+    # ปรับความสว่างของภาพสี RGB
+    st.subheader("Image Enhancement: ปรับความสว่างของภาพสี (RGB)")
+    brightness_rgb = st.slider("ปรับความสว่างของภาพสี", -50, 50, 0, step=1)
+
+    # ปรับค่าพิกเซลและจำกัดช่วง
+    enhanced_rgb = image.astype(np.int16) + brightness_rgb
+    enhanced_rgb = np.clip(enhanced_rgb, 0, 255).astype(np.uint8)
+
+    st.subheader("ภาพสีหลังปรับความสว่าง (Enhanced RGB Image)")
+    st.image(enhanced_rgb, use_column_width=True)
+
+    st.subheader("ตารางค่าพิกเซลหลังปรับ (R, G, B) [0–255]")
+
+    rgb_cols2 = st.columns(3)
+    with rgb_cols2[0]:
+        st.markdown("#### R (แดง)")
+        r_enhanced = enhanced_rgb[:, :, 0]
+        st.dataframe(pd.DataFrame(r_enhanced[:10, :10]))
+
+    with rgb_cols2[1]:
+        st.markdown("#### G (เขียว)")
+        g_enhanced = enhanced_rgb[:, :, 1]
+        st.dataframe(pd.DataFrame(g_enhanced[:10, :10]))
+
+    with rgb_cols2[2]:
+        st.markdown("#### B (น้ำเงิน)")
+        b_enhanced = enhanced_rgb[:, :, 2]
+        st.dataframe(pd.DataFrame(b_enhanced[:10, :10]))
