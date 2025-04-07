@@ -6,6 +6,16 @@ from skimage import io, img_as_float
 import numpy as np
 import matplotlib.pyplot as plt
 
+from PIL import Image
+import requests
+from io import BytesIO
+
+def load_image_from_url(url):
+    response = requests.get(url)
+    img = Image.open(BytesIO(response.content)).convert("RGB")
+    return np.array(img)
+
+
 
 # ตั้งชื่อแอป
 st.title("Image Processing with scikit-image")
@@ -77,8 +87,9 @@ if 'blend_image1' not in st.session_state:
 
 # ปุ่มสำหรับโหลดภาพ
 if st.button("โหลดและแสดงภาพเพื่อทำการ Blend"):
-    st.session_state.blend_image1 = io.imread(image_urls["ภาพที่ 1"])
-    st.session_state.blend_image2 = io.imread(image_urls["ภาพที่ 2"])
+    st.session_state.blend_image1 = load_image_from_url(image_urls["ภาพที่ 1"])
+    st.session_state.blend_image2 = load_image_from_url(image_urls["ภาพที่ 2"])
+
 
 # ถ้ามีภาพแล้ว
 if st.session_state.blend_image1 is not None and st.session_state.blend_image2 is not None:
