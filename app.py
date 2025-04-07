@@ -10,8 +10,8 @@ from scipy.ndimage import gaussian_filter, median_filter
 from skimage import exposure
 from scipy.ndimage import gaussian_filter
 from skimage.filters import unsharp_mask
+import matplotlib.pyplot as plt
 
-from scipy.signal import wiener
 
 
 # ตั้งชื่อแอป
@@ -246,6 +246,30 @@ if selected_image_url:
     # แสดงผลภาพ
     st.subheader("ภาพหลังปรับความคมชัด (Contrast Enhanced)")
     st.image(contrast_image, use_container_width=True)
+
+
+    # ===================================
+    # แสดง Histogram ของภาพ RGB หลังปรับ Contrast
+    # ===================================
+    st.subheader("Histogram ของภาพหลังปรับความคมชัด (Contrast Enhanced)")
+    
+    # ดึงแต่ละช่องสี
+    r_channel = contrast_image[:, :, 0].flatten()
+    g_channel = contrast_image[:, :, 1].flatten()
+    b_channel = contrast_image[:, :, 2].flatten()
+    
+    # วาดกราฟ histogram
+    fig_hist, ax_hist = plt.subplots()
+    ax_hist.hist(r_channel, bins=256, color='red', alpha=0.5, label='R')
+    ax_hist.hist(g_channel, bins=256, color='green', alpha=0.5, label='G')
+    ax_hist.hist(b_channel, bins=256, color='blue', alpha=0.5, label='B')
+    ax_hist.set_title("Histogram ของค่าพิกเซล (R, G, B)")
+    ax_hist.set_xlabel("ค่า intensity")
+    ax_hist.set_ylabel("จำนวนพิกเซล")
+    ax_hist.legend()
+    
+    st.pyplot(fig_hist)
+
 
 
     
