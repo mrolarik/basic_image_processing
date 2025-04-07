@@ -243,21 +243,7 @@ if selected_image_url:
     st.subheader("ภาพหลังปรับความคมชัด (Contrast Enhanced)")
     st.image(contrast_image, use_container_width=True)
     
-    # แสดงตารางพิกเซล R, G, B
-    st.subheader("ตารางค่าพิกเซลหลังปรับ Contrast (R, G, B) [0–255]")
     
-    contrast_cols = st.columns(3)
-    with contrast_cols[0]:
-        st.markdown("#### R (แดง)")
-        st.dataframe(pd.DataFrame(contrast_image[:, :, 0][:10, :10]))
-    
-    with contrast_cols[1]:
-        st.markdown("#### G (เขียว)")
-        st.dataframe(pd.DataFrame(contrast_image[:, :, 1][:10, :10]))
-    
-    with contrast_cols[2]:
-        st.markdown("#### B (น้ำเงิน)")
-        st.dataframe(pd.DataFrame(contrast_image[:, :, 2][:10, :10]))
 
 
    
