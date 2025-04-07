@@ -214,7 +214,7 @@ if selected_image_url:
     
     with compare_cols[0]:
         st.markdown("#### ก่อนฟื้นฟู (Noisy Image)")
-        st.image(noisy_image_uint8, use_cotainer_width=True)
+        st.image(noisy_image_uint8, use_container_width=True)
     
     with compare_cols[1]:
         st.markdown("#### หลังฟื้นฟู (Restored Image)")
