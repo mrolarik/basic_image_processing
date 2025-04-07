@@ -20,7 +20,7 @@ selected_image_url = None
 
 for i, (name, url) in enumerate(image_urls.items()):
     with cols[i]:
-        st.image(url, caption=name, use_column_width=True)
+        st.image(url, caption=name, use_container_width=True)
         if st.button(f"เลือก {name}"):
             selected_image_url = url
 
