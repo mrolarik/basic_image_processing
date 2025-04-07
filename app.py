@@ -11,6 +11,8 @@ from skimage import exposure
 from scipy.ndimage import gaussian_filter
 from skimage.filters import unsharp_mask
 
+from scipy.signal import wiener
+
 
 # ตั้งชื่อแอป
 st.title("Image Processing with scikit-image")
@@ -306,6 +308,56 @@ if selected_image_url:
     with deblur_cols[1]:
         st.markdown("#### หลังลบเบลอ (Deblurred)")
         st.image(deblurred_image, use_container_width=True)
+
+
+    # ===================================
+    # Image Restoration: Wiener Filter
+    # ===================================
+    st.subheader("Image Restoration: ลบความเบลอด้วย Wiener Filter")
+    
+    # เลือกขนาดของ kernel
+    wiener_kernel = st.slider("ขนาดหน้าต่าง Wiener filter", 3, 15, 5, step=2)
+    
+    # ใช้ Wiener filter กับภาพ RGB ทีละช่อง
+    def wiener_deblur_rgb(image, kernel_size):
+        restored = np.zeros_like(image, dtype=np.uint8)
+        for c in range(3):
+            channel = image[:, :, c].astype(np.float32)
+            restored_channel = wiener(channel, mysize=kernel_size)
+            restored[:, :, c] = np.clip(restored_channel, 0, 255)
+        return restored.astype(np.uint8)
+    
+    # ประมวลผล
+    wiener_restored = wiener_deblur_rgb(blurred_image_uint8, wiener_kernel)
+    
+    # แสดงภาพเปรียบเทียบ
+    st.subheader("เปรียบเทียบภาพเบลอกับภาพหลังใช้ Wiener Filter")
+    wiener_cols = st.columns(2)
+    
+    with wiener_cols[0]:
+        st.markdown("#### ก่อนฟื้นฟู (เบลอ)")
+        st.image(blurred_image_uint8, use_container_width=True)
+    
+    with wiener_cols[1]:
+        st.markdown("#### หลังฟื้นฟู (Wiener Filter)")
+        st.image(wiener_restored, use_container_width=True)
+    
+    # แสดงตารางค่าพิกเซล
+    st.subheader("ตารางค่าพิกเซลภาพฟื้นฟู (Wiener) [0–255]")
+    
+    wiener_table_cols = st.columns(3)
+    with wiener_table_cols[0]:
+        st.markdown("#### R (แดง)")
+        st.dataframe(pd.DataFrame(wiener_restored[:, :, 0][:10, :10]))
+    
+    with wiener_table_cols[1]:
+        st.markdown("#### G (เขียว)")
+        st.dataframe(pd.DataFrame(wiener_restored[:, :, 1][:10, :10]))
+    
+    with wiener_table_cols[2]:
+        st.markdown("#### B (น้ำเงิน)")
+        st.dataframe(pd.DataFrame(wiener_restored[:, :, 2][:10, :10]))
+
     
 
     
