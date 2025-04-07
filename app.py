@@ -177,22 +177,4 @@ if selected_image_url:
     st.subheader("ภาพหลังจากเพิ่ม Noise")
     st.image(noisy_image_uint8, use_container_width=True)
     
-    # แสดงค่าพิกเซล 10x10 แรกของ R, G, B
-    st.subheader("ตารางค่าพิกเซลของภาพที่มี Noise (R, G, B) [0–255]")
-    noisy_r = noisy_image_uint8[:, :, 0]
-    noisy_g = noisy_image_uint8[:, :, 1]
-    noisy_b = noisy_image_uint8[:, :, 2]
-    
-    noisy_cols = st.columns(3)
-    with noisy_cols[0]:
-        st.markdown("#### R (แดง)")
-        st.dataframe(pd.DataFrame(noisy_r[:10, :10]))
-    
-    with noisy_cols[1]:
-        st.markdown("#### G (เขียว)")
-        st.dataframe(pd.DataFrame(noisy_g[:10, :10]))
-    
-    with noisy_cols[2]:
-        st.markdown("#### B (น้ำเงิน)")
-        st.dataframe(pd.DataFrame(noisy_b[:10, :10]))
 
