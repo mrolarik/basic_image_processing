@@ -1,3 +1,5 @@
+#image_url = "https://upload.wikimedia.org/wikipedia/commons/b/bf/Bulldog_inglese.jpg"
+
 import streamlit as st
 from skimage import io, img_as_float
 import numpy as np
@@ -25,28 +27,34 @@ def resize_images_to_match(img1, img2):
 
 
 
+import streamlit as st
+import matplotlib.pyplot as plt
+from skimage import io
+
 # ตั้งชื่อแอป
 st.title("Image Processing with scikit-image")
 
-# URL ของภาพตัวอย่าง
-image_url = "https://upload.wikimedia.org/wikipedia/commons/b/bf/Bulldog_inglese.jpg"
+# URLs ของภาพตัวอย่าง
+image_options = {
+    "Bulldog": "https://upload.wikimedia.org/wikipedia/commons/b/bf/Bulldog_inglese.jpg",
+    "Cat1": "https://www.alleycat.org/wp-content/uploads/2019/03/FELV-cat.jpg",
+    "Cat2": "https://cdn.britannica.com/39/226539-050-D21D7721/Portrait-of-a-cat-with-whiskers-visible.jpg"
+}
 
-# แสดงภาพตัวอย่างแบบ thumbnail
-st.subheader("ภาพตัวอย่าง")
-thumb_col = st.columns([1, 2, 1])  # จัดตรงกลาง
-with thumb_col[1]:
-    st.image(image_url, caption="ตัวอย่างรูปภาพ", width=200)
+st.subheader("ภาพตัวอย่าง (เลือก 1 รูป)")
 
-# เตรียม session_state เพื่อเก็บภาพ
-if 'image' not in st.session_state:
-    st.session_state.image = None
+# แสดง thumbnails แบบ 3 คอลัมน์
+cols = st.columns(3)
+selected_image_url = None
 
-# ปุ่มสำหรับโหลดภาพ
-if st.button("คลิกเพื่อแสดงรูปภาพ"):
-    st.session_state.image = io.imread(image_url)
+for idx, (label, url) in enumerate(image_options.items()):
+    with cols[idx]:
+        st.image(url, caption=label, width=200)
+        if st.button(f"เลือก {label}"):
+            st.session_state.image = io.imread(url)
 
 # ถ้ามีภาพที่โหลดแล้ว
-if st.session_state.image is not None:
+if 'image' in st.session_state and st.session_state.image is not None:
     image = st.session_state.image
 
     st.subheader("ภาพต้นฉบับที่โหลดแล้ว (พร้อมแกน X, Y)")
@@ -70,6 +78,7 @@ if st.session_state.image is not None:
 
     st.subheader("ภาพบางส่วนที่เลือก")
     st.image(sliced_image, caption="ภาพบางส่วน", use_container_width=True)
+
 
 
 
