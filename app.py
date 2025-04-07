@@ -263,9 +263,9 @@ if selected_image_url:
     ax_hist.hist(r_channel, bins=256, color='red', alpha=0.5, label='R')
     ax_hist.hist(g_channel, bins=256, color='green', alpha=0.5, label='G')
     ax_hist.hist(b_channel, bins=256, color='blue', alpha=0.5, label='B')
-    ax_hist.set_title("Histogram ของค่าพิกเซล (R, G, B)")
+    ax_hist.set_title("Histogram of Pixel values (R, G, B)")
     ax_hist.set_xlabel("ค่า intensity")
-    ax_hist.set_ylabel("จำนวนพิกเซล")
+    ax_hist.set_ylabel("Number of Pixel")
     ax_hist.legend()
     
     st.pyplot(fig_hist)
