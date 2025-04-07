@@ -2,8 +2,10 @@
 
 
 import streamlit as st
-from skimage import io
+from skimage import io, img_as_float
+import numpy as np
 import matplotlib.pyplot as plt
+
 
 # ตั้งชื่อแอป
 st.title("Image Processing with scikit-image")
@@ -51,3 +53,66 @@ if st.session_state.image is not None:
     st.subheader("ภาพบางส่วนที่เลือก")
     st.image(sliced_image, caption="ภาพบางส่วน", use_container_width=True)
 
+
+# ตั้งชื่อแอป
+st.title("Image Blending with scikit-image")
+
+# URLs ของภาพ
+image_urls = {
+    "ภาพที่ 1": "https://upload.wikimedia.org/wikipedia/commons/b/bf/Bulldog_inglese.jpg",
+    "ภาพที่ 2": "https://upload.wikimedia.org/wikipedia/commons/e/e4/Hausziege_04.jpg"
+}
+
+# แสดงภาพ thumbnail
+st.subheader("ภาพตัวอย่าง")
+thumb_cols = st.columns(2)
+for i, (name, url) in enumerate(image_urls.items()):
+    with thumb_cols[i]:
+        st.image(url, caption=name, width=200)
+
+# เตรียม session_state
+if 'blend_image1' not in st.session_state:
+    st.session_state.blend_image1 = None
+    st.session_state.blend_image2 = None
+
+# ปุ่มสำหรับโหลดภาพ
+if st.button("โหลดและแสดงภาพเพื่อทำการ Blend"):
+    st.session_state.blend_image1 = io.imread(image_urls["ภาพที่ 1"])
+    st.session_state.blend_image2 = io.imread(image_urls["ภาพที่ 2"])
+
+# ถ้ามีภาพแล้ว
+if st.session_state.blend_image1 is not None and st.session_state.blend_image2 is not None:
+    img1 = img_as_float(st.session_state.blend_image1)
+    img2 = img_as_float(st.session_state.blend_image2)
+
+    # ปรับขนาดให้เท่ากัน (ใช้แค่ภาพขนาดเท่ากัน)
+    min_height = min(img1.shape[0], img2.shape[0])
+    min_width = min(img1.shape[1], img2.shape[1])
+    img1 = img1[:min_height, :min_width]
+    img2 = img2[:min_height, :min_width]
+
+    st.subheader("เลือกวิธีการ Blend")
+
+    blend_mode = st.selectbox("เลือกรูปแบบการ Blend", ["Simple Average", "Weighted Average", "Difference", "Multiply"])
+
+    if blend_mode == "Simple Average":
+        blended = (img1 + img2) / 2
+
+    elif blend_mode == "Weighted Average":
+        alpha = st.slider("ค่า Weight ของภาพที่ 1 (alpha)", 0.0, 1.0, 0.5)
+        blended = alpha * img1 + (1 - alpha) * img2
+
+    elif blend_mode == "Difference":
+        blended = np.abs(img1 - img2)
+
+    elif blend_mode == "Multiply":
+        blended = img1 * img2
+
+    blended = np.clip(blended, 0, 1)
+
+    # แสดงผล
+    st.subheader("ภาพหลังการ Blend")
+    fig, ax = plt.subplots()
+    ax.imshow(blended)
+    ax.set_axis_off()
+    st.pyplot(fig)
