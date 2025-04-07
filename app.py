@@ -123,5 +123,5 @@ if selected_image_url:
 
     st.markdown("ตารางค่าพิกเซล (ภาพสีเทาหลังปรับ) [0–155]")
     enhanced_gray_scaled = (enhanced_gray * 155).astype(int)
-    enhanced_gray_df = pd.DataFrame(enhanced_gray_scaled[:10, :10])
+    enhanced_gray_df = pd.DataFrame(enhanced_gray_scaled)
     st.dataframe(enhanced_gray_df)
