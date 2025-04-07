@@ -102,4 +102,4 @@ if selected_image_url:
 
     st.markdown("ตารางค่าพิกเซล (ขอบ) [ค่าความต่างระหว่างพิกเซล]")
     edge_df = pd.DataFrame(edge_image)
-    st.dataframe(edge_df.style.format("{:.3f}"))
+    st.dataframe(edge_df)
