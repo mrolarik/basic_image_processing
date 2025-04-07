@@ -7,9 +7,9 @@ st.title("Image Processing with scikit-image")
 # URL ของภาพตัวอย่าง
 image_url = "https://upload.wikimedia.org/wikipedia/commons/b/bf/Bulldog_inglese.jpg"
 
-# แสดงภาพตัวอย่างตั้งแต่ต้น
+# แสดงภาพตัวอย่างตั้งแต่ต้น (แบบ thumbnail)
 st.subheader("ตัวอย่างภาพ")
-st.image(image_url, caption="ภาพตัวอย่าง", use_container_width=True)
+st.image(image_url, caption="ภาพตัวอย่าง", width=200)
 
 # เตรียม session_state เพื่อเก็บภาพ
 if 'image' not in st.session_state:
