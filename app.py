@@ -49,7 +49,7 @@ if selected_image_url:
         # แสดงตารางค่าพิกเซล (0–155)
         st.markdown("ตารางค่าพิกเซล (สีเทา) [0–155]")
         gray_scaled = (gray_image * 155).astype(int)
-        gray_df = pd.DataFrame(gray_scaled[:10, :10])
+        gray_df = pd.DataFrame(gray_scaled)
         st.dataframe(gray_df)
 
     with col2:
@@ -62,5 +62,5 @@ if selected_image_url:
         # แสดงตารางค่าพิกเซล (0 หรือ 1)
         st.markdown("ตารางค่าพิกเซล (ขาวดำ) [0 หรือ 1]")
         binary_int = binary_image.astype(int)
-        binary_df = pd.DataFrame(binary_int[:10, :10])
+        binary_df = pd.DataFrame(binary_int)
         st.dataframe(binary_df)
