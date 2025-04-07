@@ -7,6 +7,7 @@ import pandas as pd
 from skimage.util import random_noise
 from skimage.restoration import denoise_tv_chambolle
 from scipy.ndimage import gaussian_filter, median_filter
+from skimage import exposure
 
 
 # ตั้งชื่อแอป
@@ -219,6 +220,28 @@ if selected_image_url:
     with compare_cols[1]:
         st.markdown("#### หลังฟื้นฟู (Restored Image)")
         st.image(restored_image_uint8, use_container_width=True)
+
+    # ===================================
+    # Image Enhancement: Contrast Adjustment
+    # ===================================
+    st.subheader("Image Enhancement: ปรับความคมชัดของภาพสี (Contrast)")
+    
+    contrast_factor = st.slider("ปรับระดับความคมชัด (Contrast)", 0.5, 2.0, 1.0, step=0.1)
+    
+    # ฟังก์ชันปรับ contrast แบบ linear บนภาพ RGB
+    def adjust_contrast(image, factor):
+        image_float = image.astype(np.float32) / 255.0
+        mean = np.mean(image_float, axis=(0, 1), keepdims=True)
+        adjusted = (image_float - mean) * factor + mean
+        adjusted = np.clip(adjusted, 0, 1)
+        return (adjusted * 255).astype(np.uint8)
+    
+    # ปรับ contrast ภาพสี
+    contrast_image = adjust_contrast(enhanced_rgb, contrast_factor)
+    
+    # แสดงผลภาพ
+    st.subheader("ภาพหลังปรับความคมชัด (Contrast Enhanced)")
+    st.image(contrast_image, use_container_width=True)
 
 
     
