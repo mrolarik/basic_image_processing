@@ -65,7 +65,7 @@ if selected_image_url:
 
     # ปรับความสว่าง (Brightness Enhancement)
     st.subheader("Image Enhancement: ปรับความสว่างของภาพสีเทา")
-    brightness_factor = st.slider("ปรับความสว่าง", -0.5, 0.5, 0.0, step=0.01)
+    brightness_factor = st.slider("ปรับความสว่าง", -0.20, 0.20, 0.0, step=0.01)
     enhanced_gray = np.clip(gray_image + brightness_factor, 0, 1)
 
     # สร้างภาพขาวดำโดยใช้ threshold
