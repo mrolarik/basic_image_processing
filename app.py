@@ -175,7 +175,7 @@ if selected_image_url:
     
     # แสดงภาพ
     st.subheader("ภาพหลังจากเพิ่ม Noise")
-    st.image(noisy_image_uint8, use_column_width=True)
+    st.image(noisy_image_uint8, use_container_width=True)
     
     # แสดงค่าพิกเซล 10x10 แรกของ R, G, B
     st.subheader("ตารางค่าพิกเซลของภาพที่มี Noise (R, G, B) [0–255]")
