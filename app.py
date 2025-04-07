@@ -8,6 +8,7 @@ from skimage.util import random_noise
 from skimage.restoration import denoise_tv_chambolle
 from scipy.ndimage import gaussian_filter, median_filter
 from skimage import exposure
+from scipy.ndimage import gaussian_filter
 
 
 # ตั้งชื่อแอป
@@ -242,6 +243,38 @@ if selected_image_url:
     # แสดงผลภาพ
     st.subheader("ภาพหลังปรับความคมชัด (Contrast Enhanced)")
     st.image(contrast_image, use_container_width=True)
+
+    # ===================================
+    # Image Processing: Blur Image
+    # ===================================
+    st.subheader("Image Processing: เบลอภาพ (Blur)")
+    
+    blur_sigma = st.slider("ปรับระดับความเบลอ (Gaussian σ)", 0.5, 5.0, 1.0, step=0.5)
+    
+    # ฟังก์ชันเบลอภาพ RGB ทีละ channel
+    def blur_rgb(image, sigma):
+        blurred = np.zeros_like(image, dtype=np.float32)
+        for c in range(3):
+            blurred[:, :, c] = gaussian_filter(image[:, :, c], sigma=sigma)
+        return np.clip(blurred / 255.0, 0, 1)  # normalize for display
+    
+    # เบลอภาพสี
+    blurred_image = blur_rgb(enhanced_rgb, blur_sigma)
+    blurred_image_uint8 = (blurred_image * 255).astype(np.uint8)
+    
+    # แสดงภาพก่อน/หลังเบลอ
+    st.subheader("เปรียบเทียบภาพก่อนและหลังเบลอ")
+    blur_cols = st.columns(2)
+    
+    with blur_cols[0]:
+        st.markdown("#### ก่อนเบลอ")
+        st.image(enhanced_rgb, use_container_width=True)
+    
+    with blur_cols[1]:
+        st.markdown("#### หลังเบลอ")
+        st.image(blurred_image_uint8, use_container_width=True)
+    
+
     
     
 
