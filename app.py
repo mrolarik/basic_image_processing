@@ -9,6 +9,7 @@ from skimage.restoration import denoise_tv_chambolle
 from scipy.ndimage import gaussian_filter, median_filter
 from skimage import exposure
 from scipy.ndimage import gaussian_filter
+from skimage.filters import unsharp_mask
 
 
 # ตั้งชื่อแอป
@@ -273,6 +274,40 @@ if selected_image_url:
     with blur_cols[1]:
         st.markdown("#### หลังเบลอ")
         st.image(blurred_image_uint8, use_container_width=True)
+
+    # ===================================
+    # Image Restoration: ลบความเบลอ (Deblur)
+    # ===================================
+    st.subheader("Image Restoration: ลบความเบลอของภาพ (Deblur)")
+    
+    # ปรับระดับความคมของ unsharp mask
+    deblur_amount = st.slider("ระดับการลบเบลอ (ความคม)", 1.0, 3.0, 1.5, step=0.1)
+    
+    # ฟังก์ชัน deblur ทีละ channel
+    def deblur_rgb(image, amount):
+        image_norm = image.astype(np.float32) / 255.0
+        deblurred = np.zeros_like(image_norm)
+        for c in range(3):
+            deblurred[:, :, c] = unsharp_mask(image_norm[:, :, c], radius=1, amount=amount)
+        deblurred = np.clip(deblurred, 0, 1)
+        return (deblurred * 255).astype(np.uint8)
+    
+    # ลบความเบลอจากภาพเบลอ
+    deblurred_image = deblur_rgb(blurred_image_uint8, deblur_amount)
+    
+    # แสดงผลภาพเปรียบเทียบ
+    st.subheader("เปรียบเทียบภาพเบลอและหลังลบเบลอ")
+    deblur_cols = st.columns(2)
+    
+    with deblur_cols[0]:
+        st.markdown("#### ก่อนลบเบลอ (เบลออยู่)")
+        st.image(blurred_image_uint8, use_container_width=True)
+    
+    with deblur_cols[1]:
+        st.markdown("#### หลังลบเบลอ (Deblurred)")
+        st.image(deblurred_image, use_container_width=True)
+    
+
     
 
     
