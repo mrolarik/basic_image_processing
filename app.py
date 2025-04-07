@@ -62,6 +62,9 @@ if selected_image_url:
     thresh = threshold_otsu(gray_image)
     binary_image = gray_image > thresh
 
+    # สร้างภาพขอบ
+    edge_image = sobel(gray_image)
+
     # แสดงผลลัพธ์
     st.subheader("ผลลัพธ์ที่ได้จากการแปลงภาพ")
     col1, col2 = st.columns(2)
