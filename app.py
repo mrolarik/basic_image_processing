@@ -176,5 +176,37 @@ if selected_image_url:
     # แสดงภาพ
     st.subheader("ภาพหลังจากเพิ่ม Noise")
     st.image(noisy_image_uint8, use_container_width=True)
+
+
+    # ===================================
+    # Image Restoration: ฟื้นฟูภาพที่มี Noise
+    # ===================================
+    st.subheader("Image Restoration: ฟื้นฟูภาพจาก Noise")
+    
+    restoration_method = st.selectbox("เลือกวิธีการฟื้นฟูภาพ", ["Median Filter", "Gaussian Filter", "Total Variation (TV) Denoising"])
+    
+    # ฟังก์ชันฟื้นฟูภาพ RGB ทีละช่อง
+    def restore_rgb(image, method):
+        restored = np.zeros_like(image, dtype=np.float32)
+        for c in range(3):
+            channel = image[:, :, c]
+            if method == "Median Filter":
+                restored[:, :, c] = median_filter(channel, size=3)
+            elif method == "Gaussian Filter":
+                restored[:, :, c] = gaussian_filter(channel, sigma=1)
+            elif method == "Total Variation (TV) Denoising":
+                restored[:, :, c] = denoise_tv_chambolle(channel, weight=0.1)
+        return np.clip(restored, 0, 1)
+    
+    # คืนภาพที่ฟื้นฟูแล้ว
+    restored_image = restore_rgb(noisy_image, restoration_method)
+    
+    # แปลงเป็น uint8
+    restored_image_uint8 = (restored_image * 255).astype(np.uint8)
+    
+    # แสดงภาพที่ผ่านการฟื้นฟู
+    st.subheader("ภาพที่ผ่านการฟื้นฟู (Restored Image)")
+    st.image(restored_image_uint8, use_column_width=True)
+
     
 
