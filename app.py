@@ -208,7 +208,7 @@ if selected_image_url:
     restored_image_uint8 = (restored_image * 255).astype(np.uint8)
     
     # แสดงภาพที่ผ่านการฟื้นฟู
-   st.subheader("เปรียบเทียบภาพก่อนและหลังการฟื้นฟู")
+    st.subheader("เปรียบเทียบภาพก่อนและหลังการฟื้นฟู")
 
     compare_cols = st.columns(2)
     
