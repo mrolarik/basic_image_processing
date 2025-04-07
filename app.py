@@ -17,13 +17,18 @@ image_urls = {
 # แสดงภาพตัวอย่างให้เลือก
 st.subheader("เลือกรูปภาพที่ต้องการแปลง")
 cols = st.columns(len(image_urls))
-selected_image_url = None
+
+# ใช้ session_state เพื่อจำภาพที่เลือกไว้
+if 'selected_image_url' not in st.session_state:
+    st.session_state.selected_image_url = None
 
 for i, (name, url) in enumerate(image_urls.items()):
     with cols[i]:
         st.image(url, caption=name, use_container_width=True)
         if st.button(f"เลือก {name}"):
-            selected_image_url = url
+            st.session_state.selected_image_url = url
+
+selected_image_url = st.session_state.selected_image_url
 
 # ถ้ามีการเลือกภาพ
 if selected_image_url:
