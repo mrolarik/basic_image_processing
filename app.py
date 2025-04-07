@@ -1,6 +1,6 @@
 import streamlit as st
 from skimage import io, color
-from skimage.filters import threshold_otsu
+from skimage.filters import threshold_otsu, sobel
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
