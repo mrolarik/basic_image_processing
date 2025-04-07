@@ -5,6 +5,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from skimage.util import random_noise
+from skimage.restoration import denoise_tv_chambolle
+from scipy.ndimage import gaussian_filter, median_filter
+
 
 # ตั้งชื่อแอป
 st.title("Image Processing with scikit-image")
