@@ -59,7 +59,7 @@ if 'image' in st.session_state and st.session_state.image is not None:
     ax.set_ylabel("Y (Row)")
     st.pyplot(fig)
 
-    st.subheader("แสดงบางส่วนของภาพ (Slice Image)")
+    st.subheader("เลือกแสดงบางส่วนของภาพ (Slice Image)")
 
     # รับ input สำหรับ slice
     row_start = st.number_input("Row start", min_value=0, max_value=image.shape[0]-1, value=0, key="row_start")
