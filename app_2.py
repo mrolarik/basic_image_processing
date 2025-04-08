@@ -62,7 +62,12 @@ if 'selected_image' in st.session_state:
     image = st.session_state.selected_image
 
     st.subheader("ภาพต้นฉบับ")
-    st.image(image, use_container_width=True)
+    fig_orig, ax_orig = plt.subplots()
+    ax_orig.imshow(image)
+    ax_orig.set_title("Original Image with Axes")
+    ax_orig.set_xlabel("X (Column)")
+    ax_orig.set_ylabel("Y (Row)")
+    st.pyplot(fig_orig)
 
     # ----------------------------
     # Resize
