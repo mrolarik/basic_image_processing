@@ -4,4 +4,4 @@ matplotlib
 pillow 
 requests
 face_recognition
-dlib
+dlib==19.24.6
