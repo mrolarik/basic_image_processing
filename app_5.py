@@ -28,7 +28,7 @@ def load_image_from_url(url):
 template_url = "https://image-cdn.essentiallysports.com/wp-content/uploads/2024-02-16T010328Z_1841023319_MT1USATODAY22532030_RTRMADP_3_MLS-PRESEASON-NEWELLS-OLD-BOYS-AT-INTER-MIAMI-CF.jpg"
 target_url = "https://image-cdn.essentiallysports.com/wp-content/uploads/2024-02-16T010328Z_1841023319_MT1USATODAY22532030_RTRMADP_3_MLS-PRESEASON-NEWELLS-OLD-BOYS-AT-INTER-MIAMI-CF.jpg"
 
-st.title("🔍 Template Matching with Multiple Detections")
+st.title("🔍 Template Matching with Top-3 Matches")
 
 # โหลดภาพ
 try:
@@ -66,7 +66,7 @@ st.image(face_crop, caption="✅ ใบหน้าที่คุณเลื�
 # ---------------------------
 # Template Matching
 # ---------------------------
-st.subheader("🎯 2. ค้นหาตำแหน่งทั้งหมดที่ตรงกับ Template")
+st.subheader("🎯 2. ค้นหาใบหน้าที่คล้ายกันทั้งหมดในภาพเป้าหมาย")
 
 # แปลงเป็น grayscale
 target_gray = color.rgb2gray(target_image)
@@ -78,37 +78,44 @@ if face_gray.shape[1] > 100:
     new_shape = (int(face_gray.shape[0] * scale), 100)
     face_gray = transform.resize(face_gray, new_shape, anti_aliasing=True)
 
-# Template Matching
+# Matching
 result = feature.match_template(target_gray, face_gray)
 
-# ใช้ threshold ในการหา match หลายจุด
+# Threshold + หาขนาด
 threshold = st.slider("Threshold สำหรับการ Matching", 0.5, 1.0, 0.85, step=0.01)
 match_locations = np.where(result >= threshold)
 
-# ขนาด template
 h_match, w_match = face_gray.shape
 
-# วาดภาพ
+# วาดกรอบทั้งหมด
 fig2, ax2 = plt.subplots()
 ax2.imshow(target_image)
+
 for (y_match, x_match) in zip(*match_locations):
     rect = plt.Rectangle((x_match, y_match), w_match, h_match, edgecolor='red', facecolor='none', linewidth=2)
     ax2.add_patch(rect)
 
-ax2.set_title("📍 ตำแหน่งที่ตรวจพบทั้งหมด")
+ax2.set_title("📍 ตำแหน่งทั้งหมดที่ตรวจพบ")
 ax2.set_xlabel("X")
 ax2.set_ylabel("Y")
 st.pyplot(fig2)
 
-# แสดงจำนวนที่ตรวจพบ
-st.success(f"🎯 ตรวจพบทั้งหมด: {len(match_locations[0])} ตำแหน่ง")
+# ---------------------------
+# แสดง Top-3 Match
+# ---------------------------
+st.subheader("🏆 3. ใบหน้าที่ตรงที่สุด 3 อันดับ")
 
-# แสดงใบหน้าที่ตรงที่สุด (match มากที่สุด)
-ij = np.unravel_index(np.argmax(result), result.shape)
-x_best, y_best = ij[::-1]
-detected_face = target_image[y_best:y_best+h_match, x_best:x_best+w_match]
+# หาค่าความตรงกันทั้งหมด แล้วจัดลำดับ
+sorted_indices = np.argsort(result.ravel())[::-1]
+top_indices = sorted_indices[:3]
+top_coords = np.array(np.unravel_index(top_indices, result.shape)).T
 
-st.subheader("🧑‍🦱 ใบหน้าที่ตรงที่สุด")
-st.image(detected_face, caption="Best Match", width=250)
+cols = st.columns(3)
+for i, (y_match, x_match) in enumerate(top_coords):
+    top_face = target_image[y_match:y_match+h_match, x_match:x_match+w_match]
+    with cols[i]:
+        st.image(top_face, caption=f"อันดับ {i+1}", use_container_width=True)
 
+# รายงานจำนวนที่ตรวจพบทั้งหมด
+st.success(f"🎯 ตรวจพบทั้งหมด: {len(match_locations[0])} ตำแหน่ง | แสดง Top 3 ที่ตรงที่สุด")
 
