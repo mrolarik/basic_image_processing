@@ -35,7 +35,7 @@ def load_image_from_url(url):
 # URLs ของ Template และ Target
 # ---------------------------
 template_options = {
-    "Template 1": "https://kreafolk.com/cdn/shop/articles/new-balance-logo-design-history-and-evolution-kreafolk_6253baa3-d41d-4864-a810-1db6b98997c9.jpg",
+    "Template 1": "https://www.shutterstock.com/image-vector/rivne-ukraine-august-10-2023-260nw-2345412515.jpg",
     "Template 2": "https://cdn.britannica.com/39/226539-050-D21D7721/Portrait-of-a-cat-with-whiskers-visible.jpg",
     "Template 3": "https://www.shutterstock.com/image-vector/rivne-ukraine-august-10-2023-600nw-2345179623.jpg"
 }
