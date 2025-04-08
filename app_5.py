@@ -33,7 +33,7 @@ template_options = {
 
 target_options = {
     "Target 1": "https://image-cdn.essentiallysports.com/wp-content/uploads/2024-02-16T010328Z_1841023319_MT1USATODAY22532030_RTRMADP_3_MLS-PRESEASON-NEWELLS-OLD-BOYS-AT-INTER-MIAMI-CF.jpg",
-    "Target 2": "https://graphicsprings.com/wp-content/uploads/2023/07/image-64-1024x1024.png",
+    "Target 2": "https://st4.depositphotos.com/19858006/23299/v/450/depositphotos_232996766-stock-illustration-milan-italy-december-2018-vector.jpg",
     "Target 3": "https://upload.wikimedia.org/wikipedia/commons/7/70/Sparrow_on_branch.jpg"
 }
 
