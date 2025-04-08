@@ -1,5 +1,14 @@
-#target_url = "https://image-cdn.essentiallysports.com/wp-content/uploads/2024-02-16T010328Z_1841023319_MT1USATODAY22532030_RTRMADP_3_MLS-PRESEASON-NEWELLS-OLD-BOYS-AT-INTER-MIAMI-CF.jpg"
-#template_url = "https://images.mlssoccer.com/image/private/t_editorial_landscape_12_desktop/f_png/mls-mia-prd/xyfcjysnblxkkprtwect.png"
+#template_options = {
+#    "Template 1": "https://www.shutterstock.com/image-vector/rivne-ukraine-august-10-2023-260nw-2345412515.jpg",
+#    "Template 2": "https://cdn.britannica.com/39/226539-050-D21D7721/Portrait-of-a-cat-with-whiskers-visible.jpg",
+#    "Template 3": "https://upload.wikimedia.org/wikipedia/commons/3/32/House_sparrow04.jpg"
+#}
+
+#target_options = {
+#    "Target 1": "https://image-cdn.essentiallysports.com/wp-content/uploads/2024-02-16T010328Z_1841023319_MT1USATODAY22532030_RTRMADP_3_MLS-PRESEASON-NEWELLS-OLD-BOYS-AT-INTER-MIAMI-CF.jpg",
+#    "Target 2": "https://st4.depositphotos.com/19858006/23299/v/450/depositphotos_232996766-stock-illustration-milan-italy-december-2018-vector.jpg",
+#    "Target 3": "https://upload.wikimedia.org/wikipedia/commons/7/70/Sparrow_on_branch.jpg"
+#}
 
 import streamlit as st
 import numpy as np
@@ -23,7 +32,7 @@ def load_image_from_url(url):
         raise ValueError(f"Error loading image: {e}")
 
 # ---------------------------
-# Template และ Target Image URLs
+# URLs ของ Template และ Target
 # ---------------------------
 template_options = {
     "Template 1": "https://www.shutterstock.com/image-vector/rivne-ukraine-august-10-2023-260nw-2345412515.jpg",
@@ -33,15 +42,14 @@ template_options = {
 
 target_options = {
     "Target 1": "https://image-cdn.essentiallysports.com/wp-content/uploads/2024-02-16T010328Z_1841023319_MT1USATODAY22532030_RTRMADP_3_MLS-PRESEASON-NEWELLS-OLD-BOYS-AT-INTER-MIAMI-CF.jpg",
-    "Target 2": "https://st4.depositphotos.com/19858006/23299/v/450/depositphotos_232996766-stock-illustration-milan-italy-december-2018-vector.jpg",
+    "Target 2": "https://www.alleycat.org/wp-content/uploads/2019/03/FELV-cat.jpg",
     "Target 3": "https://upload.wikimedia.org/wikipedia/commons/7/70/Sparrow_on_branch.jpg"
 }
 
 # ---------------------------
-# UI Header
+# ส่วนหัว
 # ---------------------------
-st.title("🔍 Template Matching with Top-5 Matches")
-st.write("เลือกรูป Template และ Target จากตัวอย่างด้านล่าง")
+st.title("🔍 Multi-Scale Template Matching (Top-5 Results)")
 
 # ---------------------------
 # เลือก Template Image
@@ -82,9 +90,9 @@ except Exception as e:
     st.stop()
 
 # ---------------------------
-# Crop Template Image
+# Crop Template ด้วย Slider
 # ---------------------------
-st.subheader("✂️ 3. เลือกตำแหน่งวัตถุใน Template Image")
+st.subheader("✂️ 3. เลือกวัตถุจาก Template Image")
 
 fig1, ax1 = plt.subplots()
 ax1.imshow(template_image)
@@ -103,47 +111,71 @@ face_crop = template_image[y:y+h, x:x+w]
 st.image(face_crop, caption="✅ วัตถุที่คุณเลือก", width=250)
 
 # ---------------------------
-# Template Matching
+# Multi-scale Template Matching
 # ---------------------------
-st.subheader("🎯 4. ค้นหาวัตถุที่คล้ายกันในภาพเป้าหมาย")
+st.subheader("🎯 4. ค้นหาในหลายขนาด (Multi-scale Matching)")
 
 target_gray = color.rgb2gray(target_image)
-face_gray = color.rgb2gray(face_crop)
+face_gray_original = color.rgb2gray(face_crop)
 
-if face_gray.shape[1] > 100:
-    scale = 100 / face_gray.shape[1]
-    new_shape = (int(face_gray.shape[0] * scale), 100)
-    face_gray = transform.resize(face_gray, new_shape, anti_aliasing=True)
-
-result = feature.match_template(target_gray, face_gray)
+scale_min = st.slider("🔍 Scale เริ่มต้น", 0.5, 1.0, 0.7, step=0.05)
+scale_max = st.slider("🔍 Scale สูงสุด", 1.0, 2.0, 1.3, step=0.05)
+scale_step = st.slider("📏 Step ของ scale", 0.05, 0.3, 0.1, step=0.05)
 threshold = st.slider("🎚️ Threshold สำหรับ Matching", 0.5, 1.0, 0.85, step=0.01)
-match_locations = np.where(result >= threshold)
 
-h_match, w_match = face_gray.shape
+scales = np.arange(scale_min, scale_max + scale_step, scale_step)
+results = []
+positions = []
+scales_used = []
 
+for scale in scales:
+    try:
+        scaled_template = transform.rescale(face_gray_original, scale, anti_aliasing=True, channel_axis=None)
+        if scaled_template.shape[0] > target_gray.shape[0] or scaled_template.shape[1] > target_gray.shape[1]:
+            continue
+        res = feature.match_template(target_gray, scaled_template)
+        results.append(res)
+        positions.append((scaled_template.shape[0], scaled_template.shape[1]))
+        scales_used.append(scale)
+    except Exception as e:
+        st.warning(f"Scale {scale:.2f}: {e}")
+
+# รวมผลทั้งหมด
+all_matches = []
+for i, res in enumerate(results):
+    for y, x in zip(*np.where(res >= threshold)):
+        score = res[y, x]
+        h_match, w_match = positions[i]
+        all_matches.append((score, x, y, w_match, h_match, scales_used[i]))
+
+# เรียงตาม score สูงสุด
+all_matches_sorted = sorted(all_matches, key=lambda x: x[0], reverse=True)
+top_matches = all_matches_sorted[:5]
+
+# ---------------------------
+# แสดงตำแหน่งทั้งหมดที่ตรวจพบ
+# ---------------------------
 fig2, ax2 = plt.subplots()
 ax2.imshow(target_image)
-for (y_match, x_match) in zip(*match_locations):
-    rect = plt.Rectangle((x_match, y_match), w_match, h_match, edgecolor='red', facecolor='none', linewidth=2)
+for (_, x, y, w, h, _) in all_matches:
+    rect = plt.Rectangle((x, y), w, h, edgecolor='red', facecolor='none', linewidth=2)
     ax2.add_patch(rect)
-ax2.set_title("📍 ตำแหน่งทั้งหมดที่ตรวจพบ")
+ax2.set_title("📍 ตำแหน่งทั้งหมดที่ตรวจพบ (หลายขนาด)")
 ax2.set_xlabel("X")
 ax2.set_ylabel("Y")
 st.pyplot(fig2)
 
 # ---------------------------
-# Top-5 Matches
+# แสดง Top-5 Match
 # ---------------------------
 st.subheader("🏆 5. วัตถุที่ตรงที่สุด 5 อันดับ")
 
-sorted_indices = np.argsort(result.ravel())[::-1]
-top_indices = sorted_indices[:5]
-top_coords = np.array(np.unravel_index(top_indices, result.shape)).T
-
 cols_top5 = st.columns(5)
-for i, (y_match, x_match) in enumerate(top_coords):
-    top_face = target_image[y_match:y_match+h_match, x_match:x_match+w_match]
+for i, (score, x, y, w, h, scale) in enumerate(top_matches):
+    matched_crop = target_image[y:y+h, x:x+w]
     with cols_top5[i]:
-        st.image(top_face, caption=f"อันดับ {i+1}", use_container_width=True)
+        st.image(matched_crop, caption=f"อันดับ {i+1}\nScale={scale:.2f}", use_container_width=True)
 
-st.success(f"🎯 ตรวจพบทั้งหมด: {len(match_locations[0])} ตำแหน่ง | แสดง Top 5 ที่ตรงที่สุด")
+st.success(f"🎯 รวมตรวจพบทั้งหมด: {len(all_matches)} ตำแหน่ง | แสดง Top 5 จากหลายขนาด")
+
+
