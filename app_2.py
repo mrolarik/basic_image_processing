@@ -86,11 +86,12 @@ if 'selected_image' in st.session_state:
     final_image = flip_image(rotated_image, flip_option)
 
     # ----------------------------
-    # แสดงภาพผลลัพธ์
+    # แสดงภาพผลลัพธ์พร้อมแกน X, Y
     # ----------------------------
-    st.subheader("ผลลัพธ์ภาพหลังการแปลง")
+    st.subheader("ผลลัพธ์ภาพหลังการแปลง (พร้อมแกน X, Y)")
     fig, ax = plt.subplots()
     ax.imshow(final_image)
-    ax.set_title("Transformed Image")
-    ax.set_axis_off()
+    ax.set_title("Transformed Image with Axes")
+    ax.set_xlabel("X (Column)")
+    ax.set_ylabel("Y (Row)")
     st.pyplot(fig)
