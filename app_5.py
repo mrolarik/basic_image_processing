@@ -148,7 +148,7 @@ ax2.imshow(target_image)
 for (_, x, y, w, h, _) in all_matches:
     rect = plt.Rectangle((x, y), w, h, edgecolor='red', facecolor='none', linewidth=2)
     ax2.add_patch(rect)
-ax2.set_title("Locations Detected (Multi-scale)")
+ax2.set_title("Locations Detected (Multi-Scale)")
 ax2.set_xlabel("X")
 ax2.set_ylabel("Y")
 st.pyplot(fig2)
