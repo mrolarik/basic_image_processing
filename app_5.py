@@ -42,7 +42,7 @@ template_options = {
 
 target_options = {
     "Target 1": "https://kreafolk.com/cdn/shop/articles/new-balance-logo-design-history-and-evolution-kreafolk_6253baa3-d41d-4864-a810-1db6b98997c9.jpg",
-    "Target 2": "https://static.vecteezy.com/system/resources/previews/021/066/020/non_2x/set-of-popular-sportswear-logos-free-vector.jpg",
+    "Target 2": "https://emssound.net/wp-content/uploads/2017/12/logowall.jpg",
     "Target 3": "https://www.shutterstock.com/image-vector/rivne-ukraine-august-10-2023-600nw-2345179623.jpg"
 }
 
