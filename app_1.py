@@ -106,35 +106,57 @@ if st.button("Load and Blend Images"):
 
 # ถ้ามีภาพแล้ว
 if st.session_state.blend_image1 is not None and st.session_state.blend_image2 is not None:
+    original_img1 = st.session_state.blend_image1
+    original_img2 = st.session_state.blend_image2
+
+    # แสดง Original Images ก่อน resize
+    st.subheader("Original Images (Before Resize)")
+    ori_cols = st.columns(2)
+    with ori_cols[0]:
+        fig_ori1, ax_ori1 = plt.subplots()
+        ax_ori1.imshow(original_img1)
+        ax_ori1.set_title("Original Image 1")
+        ax_ori1.set_xlabel("X (Column)")
+        ax_ori1.set_ylabel("Y (Row)")
+        st.pyplot(fig_ori1)
+
+    with ori_cols[1]:
+        fig_ori2, ax_ori2 = plt.subplots()
+        ax_ori2.imshow(original_img2)
+        ax_ori2.set_title("Original Image 2")
+        ax_ori2.set_xlabel("X (Column)")
+        ax_ori2.set_ylabel("Y (Row)")
+        st.pyplot(fig_ori2)
+
     # แปลงเป็น float และ resize ให้เท่ากัน
-    img1 = img_as_float(st.session_state.blend_image1)
-    img2 = img_as_float(st.session_state.blend_image2)
+    img1 = img_as_float(original_img1)
+    img2 = img_as_float(original_img2)
     img1, img2 = resize_images_to_match(img1, img2)
 
-    # แสดง Image 1 และ Image 2 พร้อมแกน X, Y
-    st.subheader("Original Images (with Axes)")
-    img_cols = st.columns(2)
+    # แสดง Images หลัง resize
+    st.subheader("Resized Images (Before Blending)")
+    resize_cols = st.columns(2)
 
-    with img_cols[0]:
+    with resize_cols[0]:
         fig1, ax1 = plt.subplots()
         ax1.imshow(img1)
-        ax1.set_title("Image 1")
+        ax1.set_title("Resized Image 1")
         ax1.set_xlabel("X (Column)")
         ax1.set_ylabel("Y (Row)")
         st.pyplot(fig1)
 
-    with img_cols[1]:
+    with resize_cols[1]:
         fig2, ax2 = plt.subplots()
         ax2.imshow(img2)
-        ax2.set_title("Image 2")
+        ax2.set_title("Resized Image 2")
         ax2.set_xlabel("X (Column)")
         ax2.set_ylabel("Y (Row)")
         st.pyplot(fig2)
 
+    # เลือก blend mode
     st.subheader("Blending Options")
     blend_mode = st.selectbox("Select Blend Mode", ["Simple Average", "Weighted Average", "Difference", "Multiply"])
 
-    # เลือกวิธี blend
     if blend_mode == "Simple Average":
         blended = (img1 + img2) / 2
 
@@ -151,7 +173,7 @@ if st.session_state.blend_image1 is not None and st.session_state.blend_image2 i
     # ปรับค่าพิกเซลไม่ให้เกินขอบเขต
     blended = np.clip(blended, 0, 1)
 
-    # แสดงภาพผลลัพธ์พร้อมแกน X, Y
+    # แสดง Blended Image พร้อมแกน
     st.subheader("Blended Image (with Axes)")
     fig, ax = plt.subplots()
     ax.imshow(blended)
