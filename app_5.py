@@ -110,7 +110,7 @@ sorted_indices = np.argsort(result.ravel())[::-1]
 top_indices = sorted_indices[:5]
 top_coords = np.array(np.unravel_index(top_indices, result.shape)).T
 
-cols = st.columns(3)
+cols = st.columns(5)
 for i, (y_match, x_match) in enumerate(top_coords):
     top_face = target_image[y_match:y_match+h_match, x_match:x_match+w_match]
     with cols[i]:
