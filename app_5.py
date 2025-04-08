@@ -35,13 +35,13 @@ def load_image_from_url(url):
 # URLs ของ Template และ Target
 # ---------------------------
 template_options = {
-    "Template 1": "https://www.shutterstock.com/image-vector/rivne-ukraine-august-10-2023-260nw-2345412515.jpg",
+    "Template 1": "https://kreafolk.com/cdn/shop/articles/new-balance-logo-design-history-and-evolution-kreafolk_6253baa3-d41d-4864-a810-1db6b98997c9.jpg",
     "Template 2": "https://cdn.britannica.com/39/226539-050-D21D7721/Portrait-of-a-cat-with-whiskers-visible.jpg",
-    "Template 3": "https://kreafolk.com/cdn/shop/articles/new-balance-logo-design-history-and-evolution-kreafolk_6253baa3-d41d-4864-a810-1db6b98997c9.jpg"
+    "Template 3": "https://www.shutterstock.com/image-vector/rivne-ukraine-august-10-2023-600nw-2345179623.jpg"
 }
 
 target_options = {
-    "Target 1": "https://image-cdn.essentiallysports.com/wp-content/uploads/2024-02-16T010328Z_1841023319_MT1USATODAY22532030_RTRMADP_3_MLS-PRESEASON-NEWELLS-OLD-BOYS-AT-INTER-MIAMI-CF.jpg",
+    "Target 1": "https://kreafolk.com/cdn/shop/articles/new-balance-logo-design-history-and-evolution-kreafolk_6253baa3-d41d-4864-a810-1db6b98997c9.jpg",
     "Target 2": "https://static.vecteezy.com/system/resources/previews/021/066/020/non_2x/set-of-popular-sportswear-logos-free-vector.jpg",
     "Target 3": "https://www.shutterstock.com/image-vector/rivne-ukraine-august-10-2023-600nw-2345179623.jpg"
 }
