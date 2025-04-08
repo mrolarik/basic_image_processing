@@ -96,6 +96,6 @@ st.pyplot(fig2)
 # แสดงใบหน้าที่ตรวจพบ
 st.subheader("🧑‍🦱 ใบหน้าที่ตรวจพบใน Target Image")
 detected_face = target_image[y_match:y_match+h_match, x_match:x_match+w_match]
-st.image(detected_face, caption="ใบหน้าที่ตรวจพบ", width=250)
+st.image(detected_face, caption="Template Matching", width=250)
 
 
