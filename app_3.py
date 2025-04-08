@@ -148,15 +148,18 @@ if 'selected_image' in st.session_state:
     ax_rgb_mask.axis("off")
     st.pyplot(fig_rgb_mask)
 
-    # แสดง segmented image
-    segmented = np.zeros_like(image)
-    for i in range(3):
-        segmented[:, :, i] = image[:, :, i] * mask
+    # แสดง segmented image แบบพื้นหลังโปร่งใส
+    st.subheader("ภาพที่ผ่านการแยกสุนัข (พื้นหลังโปร่งใส)")
 
-    st.subheader("ภาพที่ผ่านการแยกสุนัขออกจากพื้นหลัง (Segmented Image)")
+    # สร้าง alpha channel จาก mask
+    alpha_channel = (mask * 255).astype(np.uint8)
+
+    # สร้าง RGBA image
+    rgba_image = np.dstack((image, alpha_channel))
+
     fig_result, ax_result = plt.subplots()
-    ax_result.imshow(segmented)
-    ax_result.set_title("Segmented Image")
+    ax_result.imshow(rgba_image)
+    ax_result.set_title("Segmented Image with Transparent Background")
     ax_result.axis("off")
     st.pyplot(fig_result)
 
