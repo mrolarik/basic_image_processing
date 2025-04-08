@@ -50,7 +50,7 @@ ij = np.unravel_index(np.argmax(result), result.shape)
 x, y = ij[::-1]
 h, w = template_gray.shape
 
-# แสดงผล
+# แสดงภาพพร้อมกรอบตำแหน่ง
 fig, ax = plt.subplots()
 ax.imshow(target_image)
 rect = plt.Rectangle((x, y), w, h, edgecolor='red', facecolor='none', linewidth=2)
@@ -59,3 +59,8 @@ ax.set_title("📍 ตำแหน่งใบหน้าที่พบ")
 ax.set_xlabel("X")
 ax.set_ylabel("Y")
 st.pyplot(fig)
+
+# 🟦 แสดงใบหน้าที่ตรวจพบ (crop จาก target image)
+st.subheader("🧑‍🦱 ใบหน้าที่ตรวจพบในภาพเป้าหมาย")
+detected_face = target_image[y:y+h, x:x+w]
+st.image(detected_face, caption="ใบหน้าที่พบ", width=250)
