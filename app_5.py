@@ -44,7 +44,7 @@ except Exception as e:
     st.stop()
 
 try:
-    target_image = load_image_from_url(target_image)
+    target_image = load_image_from_url(target_url)
 except Exception as e:
     st.error(f"เกิดข้อผิดพลาดในการโหลดภาพ target: {e}")
     st.stop()
