@@ -3,3 +3,4 @@ scikit-image
 matplotlib
 pillow 
 requests
+face_recognition
