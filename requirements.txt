@@ -3,5 +3,4 @@ scikit-image
 matplotlib
 pillow 
 requests
-face_recognition
-dlib==19.24.6
+
