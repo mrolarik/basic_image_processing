@@ -4,3 +4,4 @@ matplotlib
 pillow 
 requests
 face_recognition
+dlib
