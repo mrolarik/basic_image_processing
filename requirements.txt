@@ -3,4 +3,5 @@ scikit-image
 matplotlib
 pillow 
 requests
+opencv-python
 
