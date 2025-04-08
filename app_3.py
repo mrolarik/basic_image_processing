@@ -34,9 +34,9 @@ def show_channel_image(channel_data, title, cmap='gray'):
 # -------------------------------
 # URLs ของภาพตัวอย่าง
 # -------------------------------
-image_urls = {
-    "Cat": "https://www.alleycat.org/wp-content/uploads/2019/03/FELV-cat.jpg",
-    "Goat": "https://upload.wikimedia.org/wikipedia/commons/e/e4/Hausziege_04.jpg"
+image_options = {
+    "Dog": "https://upload.wikimedia.org/wikipedia/commons/b/bf/Bulldog_inglese.jpg",
+    "Cat": "https://cdn.britannica.com/39/226539-050-D21D7721/Portrait-of-a-cat-with-whiskers-visible.jpg"
 }
 
 # -------------------------------
