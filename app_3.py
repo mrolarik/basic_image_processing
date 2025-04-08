@@ -46,7 +46,7 @@ st.title("Image Processing: RGB to YCrCb Channel Viewer")
 
 st.subheader("เลือกรูปภาพที่ต้องการประมวลผล")
 cols = st.columns(2)
-for i, (label, url) in enumerate(image_urls.items()):
+for i, (label, url) in enumerate(image_options.items()):
     with cols[i]:
         st.image(url, caption=label, width=200)
         if st.button(f"เลือก {label}"):
