@@ -56,8 +56,10 @@ faces = detector.detect_multi_scale(img=template_gray,
                                      min_size=(60, 60),
                                      max_size=(300, 300))
 
-if len(faces) == 0:
-    st.error("ไม่พบใบหน้าใน template image")
+# ✅ เพิ่มเงื่อนไขป้องกันเมื่อไม่พบใบหน้า
+if faces is None or len(faces) == 0:
+    st.warning("ไม่พบใบหน้าในภาพที่ใช้ค้นหา กรุณาใช้ภาพอื่น หรือเลือกใบหน้าแบบแมนนวล")
+    st.stop()
 else:
     x, y, w, h = faces[0]
     face_crop = template_image[y:y+h, x:x+w]
