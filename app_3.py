@@ -145,7 +145,7 @@ if 'selected_image' in st.session_state:
     rgb_mask[:, :, 1] = 0
     rgb_mask[:, :, 2] = 0
 
-    st.subheader("RGB Mask (วัตถุเป็นสีแดง)")
+    st.subheader("Binary Mask (วัตถุเป็นสีแดง)")
     fig_rgb_mask, ax_rgb_mask = plt.subplots()
     ax_rgb_mask.imshow(rgb_mask)
     ax_rgb_mask.set_title(f"RGB Mask from {seg_channel}")
