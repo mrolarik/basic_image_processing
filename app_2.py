@@ -122,8 +122,8 @@ if 'original_image' in st.session_state:
     # -------------------------------
     # รีเซ็ตค่าหากกดปุ่ม reset
     # -------------------------------
-    if st.button("รีเซ็ต Transformation"):
-        st.session_state.reset = True
+    #if st.button("รีเซ็ต Transformation"):
+    #    st.session_state.reset = True
     
     # ----------------------------
     # แสดงภาพผลลัพธ์
