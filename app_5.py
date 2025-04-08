@@ -28,7 +28,7 @@ def load_image_from_url(url):
 template_url = "https://image-cdn.essentiallysports.com/wp-content/uploads/2024-02-16T010328Z_1841023319_MT1USATODAY22532030_RTRMADP_3_MLS-PRESEASON-NEWELLS-OLD-BOYS-AT-INTER-MIAMI-CF.jpg"
 target_url = "https://image-cdn.essentiallysports.com/wp-content/uploads/2024-02-16T010328Z_1841023319_MT1USATODAY22532030_RTRMADP_3_MLS-PRESEASON-NEWELLS-OLD-BOYS-AT-INTER-MIAMI-CF.jpg"
 
-st.title("🔍 Template Matching with Top-3 Matches")
+st.title("🔍 Template Matching with Top-5 Matches")
 
 # โหลดภาพ
 try:
@@ -41,7 +41,7 @@ except Exception as e:
 # ---------------------------
 # แสดง template image พร้อมแกน X, Y
 # ---------------------------
-st.subheader("📌 1. เลือกตำแหน่งใบหน้าจาก Template Image")
+st.subheader("📌 1. เลือกตำแหน่งวัตถุ (Object) ที่ต้องการค้นหาจาก Template Image")
 
 fig1, ax1 = plt.subplots()
 ax1.imshow(template_image)
@@ -61,12 +61,12 @@ h = st.slider("ความสูง (Height)", 10, max_y - y, 100)
 
 # Crop ใบหน้าที่เลือก
 face_crop = template_image[y:y+h, x:x+w]
-st.image(face_crop, caption="✅ ใบหน้าที่คุณเลือกเพื่อใช้ค้นหา", width=250)
+st.image(face_crop, caption="✅ วัตถุที่คุณเลือกเพื่อใช้ค้นหา", width=250)
 
 # ---------------------------
 # Template Matching
 # ---------------------------
-st.subheader("🎯 2. ค้นหาใบหน้าที่คล้ายกันทั้งหมดในภาพเป้าหมาย")
+st.subheader("🎯 2. ค้นหาวัตถุที่คล้ายกันทั้งหมดในภาพเป้าหมาย")
 
 # แปลงเป็น grayscale
 target_gray = color.rgb2gray(target_image)
@@ -95,15 +95,15 @@ for (y_match, x_match) in zip(*match_locations):
     rect = plt.Rectangle((x_match, y_match), w_match, h_match, edgecolor='red', facecolor='none', linewidth=2)
     ax2.add_patch(rect)
 
-ax2.set_title("📍 ตำแหน่งทั้งหมดที่ตรวจพบ")
+ax2.set_title("All Locations Detected")
 ax2.set_xlabel("X")
 ax2.set_ylabel("Y")
 st.pyplot(fig2)
 
 # ---------------------------
-# แสดง Top-3 Match
+# แสดง Top-5 Match
 # ---------------------------
-st.subheader("🏆 3. ใบหน้าที่ตรงที่สุด 3 อันดับ")
+st.subheader("🏆 3. วัตถุที่ตรงที่สุด 5 อันดับ")
 
 # หาค่าความตรงกันทั้งหมด แล้วจัดลำดับ
 sorted_indices = np.argsort(result.ravel())[::-1]
@@ -117,5 +117,5 @@ for i, (y_match, x_match) in enumerate(top_coords):
         st.image(top_face, caption=f"อันดับ {i+1}", use_container_width=True)
 
 # รายงานจำนวนที่ตรวจพบทั้งหมด
-st.success(f"🎯 ตรวจพบทั้งหมด: {len(match_locations[0])} ตำแหน่ง | แสดง Top 3 ที่ตรงที่สุด")
+st.success(f"🎯 ตรวจพบทั้งหมด: {len(match_locations[0])} ตำแหน่ง | แสดง Top 5 ที่ตรงที่สุด")
 
