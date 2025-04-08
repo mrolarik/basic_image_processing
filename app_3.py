@@ -41,7 +41,7 @@ image_options = {
 # -------------------------------
 # ส่วนแสดง thumbnail
 # -------------------------------
-st.title("Image Processing: RGB to YCrCb Channel Viewer + Segmentation")
+st.title("Image Processing: RGB to YCrCb Viewer + Segmentation")
 
 st.subheader("เลือกรูปภาพที่ต้องการประมวลผล")
 cols = st.columns(2)
@@ -113,25 +113,50 @@ if 'selected_image' in st.session_state:
     # Normalize Cr เพื่อใช้ threshold
     cr_normalized = Cr / 255.0
     otsu_threshold = filters.threshold_otsu(cr_normalized)
-    st.markdown(f"ใช้ Otsu threshold = `{otsu_threshold:.3f}` บน Cr channel")
 
-    # สร้าง mask และแสดง
-    mask = cr_normalized > otsu_threshold
+    # แสดง slider ปรับ threshold (ค่าเริ่มต้นคือ Otsu)
+    threshold_val = st.slider(
+        "ปรับค่า threshold (เริ่มต้นจาก Otsu)",
+        min_value=0.0,
+        max_value=1.0,
+        value=float(round(otsu_threshold, 3)),
+        step=0.01
+    )
 
+    st.markdown(f"**Threshold ที่ใช้งาน: {threshold_val:.2f}** (Otsu ≈ {otsu_threshold:.3f})")
+
+    # สร้าง binary mask
+    mask = cr_normalized > threshold_val
+
+    st.markdown("**Binary Mask**")
     fig_mask, ax_mask = plt.subplots()
     ax_mask.imshow(mask, cmap='gray')
     ax_mask.set_title("Binary Mask จาก Cr")
     ax_mask.axis("off")
     st.pyplot(fig_mask)
 
-    # นำ mask ไปใช้กับภาพต้นฉบับ
+    # สร้าง RGB mask สีแดง
+    rgb_mask = np.zeros_like(image)
+    rgb_mask[:, :, 0] = mask * 255  # Red
+    rgb_mask[:, :, 1] = 0
+    rgb_mask[:, :, 2] = 0
+
+    st.subheader("RGB Mask (วัตถุเป็นสีแดง)")
+    fig_rgb_mask, ax_rgb_mask = plt.subplots()
+    ax_rgb_mask.imshow(rgb_mask)
+    ax_rgb_mask.set_title("RGB Mask (Foreground = Red)")
+    ax_rgb_mask.axis("off")
+    st.pyplot(fig_rgb_mask)
+
+    # แสดง segmented image
     segmented = np.zeros_like(image)
     for i in range(3):
         segmented[:, :, i] = image[:, :, i] * mask
 
-    st.subheader("ภาพที่ผ่านการแยกสุนัขออกจากพื้นหลัง")
+    st.subheader("ภาพที่ผ่านการแยกสุนัขออกจากพื้นหลัง (Segmented Image)")
     fig_result, ax_result = plt.subplots()
     ax_result.imshow(segmented)
     ax_result.set_title("Segmented Image")
     ax_result.axis("off")
     st.pyplot(fig_result)
+
