@@ -148,7 +148,7 @@ if 'selected_image' in st.session_state:
     st.subheader("RGB Mask (วัตถุเป็นสีแดง)")
     fig_rgb_mask, ax_rgb_mask = plt.subplots()
     ax_rgb_mask.imshow(rgb_mask)
-    ax_rgb_mask.set_title(f"RGB Mask จาก {seg_channel}")
+    ax_rgb_mask.set_title(f"RGB Mask from {seg_channel}")
     ax_rgb_mask.axis("off")
     st.pyplot(fig_rgb_mask)
 
