@@ -35,7 +35,7 @@ def load_image_from_url(url):
 # URLs ของ Template และ Target
 # ---------------------------
 template_options = {
-    "Template 1": "https://www.shutterstock.com/image-vector/rivne-ukraine-august-10-2023-260nw-2345412515.jpg",
+    "Template 1": "https://www.inspireuplift.com/resizer/?image=https://cdn.inspireuplift.com/uploads/images/seller_products/1686297015_3.jpg",
     "Template 2": "https://www.inspireuplift.com/resizer/?image=https://cdn.inspireuplift.com/uploads/images/seller_products/1686297015_3.jpg",
     "Template 3": "https://www.shutterstock.com/image-vector/rivne-ukraine-august-10-2023-600nw-2345179623.jpg"
 }
@@ -43,7 +43,7 @@ template_options = {
 target_options = {
     "Target 1": "https://www.inspireuplift.com/resizer/?image=https://cdn.inspireuplift.com/uploads/images/seller_products/1686297015_3.jpg",
     "Target 2": "https://emssound.net/wp-content/uploads/2017/12/logowall.jpg",
-    "Target 3": "https://www.shutterstock.com/image-vector/rivne-ukraine-august-10-2023-600nw-2345179623.jpg"
+    "Target 3": "https://www.inspireuplift.com/resizer/?image=https://cdn.inspireuplift.com/uploads/images/seller_products/1686297015_3.jpg"
 }
 
 # ---------------------------
