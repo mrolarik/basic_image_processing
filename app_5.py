@@ -25,11 +25,10 @@ def load_image_from_url(url):
 # ---------------------------
 # URLs
 # ---------------------------
-target_url = "https://image-cdn.essentiallysports.com/wp-content/uploads/2024-02-16T010328Z_1841023319_MT1USATODAY22532030_RTRMADP_3_MLS-PRESEASON-NEWELLS-OLD-BOYS-AT-INTER-MIAMI-CF.jpg"
-#template_url = "https://images.mlssoccer.com/image/private/t_editorial_landscape_12_desktop/f_png/mls-mia-prd/xyfcjysnblxkkprtwect.png"
 template_url = "https://image-cdn.essentiallysports.com/wp-content/uploads/2024-02-16T010328Z_1841023319_MT1USATODAY22532030_RTRMADP_3_MLS-PRESEASON-NEWELLS-OLD-BOYS-AT-INTER-MIAMI-CF.jpg"
+target_url = "https://image-cdn.essentiallysports.com/wp-content/uploads/2024-02-16T010328Z_1841023319_MT1USATODAY22532030_RTRMADP_3_MLS-PRESEASON-NEWELLS-OLD-BOYS-AT-INTER-MIAMI-CF.jpg"
 
-st.title("🔍 Template Matching with Manual Face Crop")
+st.title("🔍 Template Matching with Multiple Detections")
 
 # โหลดภาพ
 try:
@@ -67,8 +66,9 @@ st.image(face_crop, caption="✅ ใบหน้าที่คุณเลื�
 # ---------------------------
 # Template Matching
 # ---------------------------
-st.subheader("🎯 2. ค้นหาใบหน้าที่คล้ายกันใน Target Image")
+st.subheader("🎯 2. ค้นหาตำแหน่งทั้งหมดที่ตรงกับ Template")
 
+# แปลงเป็น grayscale
 target_gray = color.rgb2gray(target_image)
 face_gray = color.rgb2gray(face_crop)
 
@@ -78,24 +78,37 @@ if face_gray.shape[1] > 100:
     new_shape = (int(face_gray.shape[0] * scale), 100)
     face_gray = transform.resize(face_gray, new_shape, anti_aliasing=True)
 
+# Template Matching
 result = feature.match_template(target_gray, face_gray)
-ij = np.unravel_index(np.argmax(result), result.shape)
-x_match, y_match = ij[::-1]
+
+# ใช้ threshold ในการหา match หลายจุด
+threshold = st.slider("Threshold สำหรับการ Matching", 0.5, 1.0, 0.85, step=0.01)
+match_locations = np.where(result >= threshold)
+
+# ขนาด template
 h_match, w_match = face_gray.shape
 
-# แสดงตำแหน่งใบหน้าที่ตรวจพบ
+# วาดภาพ
 fig2, ax2 = plt.subplots()
 ax2.imshow(target_image)
-rect = plt.Rectangle((x_match, y_match), w_match, h_match, edgecolor='red', facecolor='none', linewidth=2)
-ax2.add_patch(rect)
-ax2.set_title("Location in the Target image")
+for (y_match, x_match) in zip(*match_locations):
+    rect = plt.Rectangle((x_match, y_match), w_match, h_match, edgecolor='red', facecolor='none', linewidth=2)
+    ax2.add_patch(rect)
+
+ax2.set_title("📍 ตำแหน่งที่ตรวจพบทั้งหมด")
 ax2.set_xlabel("X")
 ax2.set_ylabel("Y")
 st.pyplot(fig2)
 
-# แสดงใบหน้าที่ตรวจพบ
-st.subheader("🧑‍🦱 ใบหน้าที่ตรวจพบใน Target Image")
-detected_face = target_image[y_match:y_match+h_match, x_match:x_match+w_match]
-st.image(detected_face, caption="Template Matching", width=250)
+# แสดงจำนวนที่ตรวจพบ
+st.success(f"🎯 ตรวจพบทั้งหมด: {len(match_locations[0])} ตำแหน่ง")
+
+# แสดงใบหน้าที่ตรงที่สุด (match มากที่สุด)
+ij = np.unravel_index(np.argmax(result), result.shape)
+x_best, y_best = ij[::-1]
+detected_face = target_image[y_best:y_best+h_match, x_best:x_best+w_match]
+
+st.subheader("🧑‍🦱 ใบหน้าที่ตรงที่สุด")
+st.image(detected_face, caption="Best Match", width=250)
 
 
