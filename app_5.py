@@ -25,8 +25,8 @@ def load_image_from_url(url):
 # ---------------------------
 # URLs
 # ---------------------------
-template_url = "https://upload.wikimedia.org/wikipedia/commons/b/bf/Bulldog_inglese.jpg"
-target_url = "https://www.alleycat.org/wp-content/uploads/2019/03/FELV-cat.jpg"
+target_url = "https://image-cdn.essentiallysports.com/wp-content/uploads/2024-02-16T010328Z_1841023319_MT1USATODAY22532030_RTRMADP_3_MLS-PRESEASON-NEWELLS-OLD-BOYS-AT-INTER-MIAMI-CF.jpg"
+template_url = "https://images.mlssoccer.com/image/private/t_editorial_landscape_12_desktop/f_png/mls-mia-prd/xyfcjysnblxkkprtwect.png"
 
 st.title("🔍 Template Matching with Manual Face Crop")
 
