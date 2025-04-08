@@ -21,7 +21,7 @@ def load_image_from_url(url):
 # URLs
 # ---------------------------
 target_url = "https://image-cdn.essentiallysports.com/wp-content/uploads/2024-02-16T010328Z_1841023319_MT1USATODAY22532030_RTRMADP_3_MLS-PRESEASON-NEWELLS-OLD-BOYS-AT-INTER-MIAMI-CF.jpg"
-template_url = "https://pbs.twimg.com/media/FyCKKBDWYAwwEZl.jpg"
+template_url = "https://www.sportspro.com/wp-content/uploads/2023/08/Messi-Inter-Miami-1.jpg"
 
 st.title("🔍 Face Detection (scikit-image) + Template Matching")
 
