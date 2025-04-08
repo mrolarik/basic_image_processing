@@ -47,7 +47,7 @@ template_gray = color.rgb2gray(template_image)
 # โหลด Haar Cascade classifier ที่มากับ skimage
 trained_file = data.lbp_frontal_face_cascade_filename()
 #detector = Cascade(filename=trained_file)
-detector = Cascade(trained_file)
+detector = feature.Cascade(data.lbp_frontal_face_cascade_filename())
 
 # ตรวจจับใบหน้า
 faces = detector.detect_multi_scale(img=template_gray,
