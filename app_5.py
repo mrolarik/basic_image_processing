@@ -36,7 +36,7 @@ def load_image_from_url(url):
 # ---------------------------
 template_options = {
     "Template 1": "https://www.shutterstock.com/image-vector/rivne-ukraine-august-10-2023-260nw-2345412515.jpg",
-    "Template 2": "https://cdn.britannica.com/39/226539-050-D21D7721/Portrait-of-a-cat-with-whiskers-visible.jpg",
+    "Template 2": "https://static.vecteezy.com/system/resources/previews/020/336/033/non_2x/puma-logo-puma-icon-free-free-vector.jpg",
     "Template 3": "https://www.shutterstock.com/image-vector/rivne-ukraine-august-10-2023-600nw-2345179623.jpg"
 }
 
