@@ -26,12 +26,12 @@ st.title("🔍 Template Matching (ไม่มี OpenCV)")
 target_image = load_image_from_url(target_url)
 template_image = load_image_from_url(template_url)
 
-# แสดงต้นฉบับ
+# แสดงภาพต้นฉบับ
 cols = st.columns(2)
 with cols[0]:
-    st.image(template_image, caption="ใบหน้าที่ใช้ค้นหา", use_container_width=True)
+    st.image(template_image, caption="ใบหน้าที่ใช้ค้นหา (Template Image)", use_container_width=True)
 with cols[1]:
-    st.image(target_image, caption="ภาพเป้าหมาย", use_container_width=True)
+    st.image(target_image, caption="ภาพเป้าหมาย (Target Image)", use_container_width=True)
 
 # แปลงเป็น grayscale
 target_gray = color.rgb2gray(target_image)
@@ -50,17 +50,25 @@ ij = np.unravel_index(np.argmax(result), result.shape)
 x, y = ij[::-1]
 h, w = template_gray.shape
 
-# แสดงภาพพร้อมกรอบตำแหน่ง
+# แสดงภาพพร้อมกรอบใบหน้าที่ตรวจพบ
 fig, ax = plt.subplots()
 ax.imshow(target_image)
 rect = plt.Rectangle((x, y), w, h, edgecolor='red', facecolor='none', linewidth=2)
 ax.add_patch(rect)
-ax.set_title("📍 ตำแหน่งใบหน้าที่พบ")
+ax.set_title("📍 ตำแหน่งใบหน้าที่ตรวจพบในภาพเป้าหมาย")
 ax.set_xlabel("X")
 ax.set_ylabel("Y")
 st.pyplot(fig)
 
-# 🟦 แสดงใบหน้าที่ตรวจพบ (crop จาก target image)
-st.subheader("🧑‍🦱 ใบหน้าที่ตรวจพบในภาพเป้าหมาย")
-detected_face = target_image[y:y+h, x:x+w]
-st.image(detected_face, caption="ใบหน้าที่พบ", width=250)
+# แสดงใบหน้าทั้งสองเปรียบเทียบ
+st.subheader("🔍 เปรียบเทียบใบหน้า")
+
+col_faces = st.columns(2)
+with col_faces[0]:
+    st.markdown("**📌 ใบหน้าที่ใช้ค้นหา (Template Face)**")
+    st.image(template_image, width=250)
+
+with col_faces[1]:
+    st.markdown("**🎯 ใบหน้าที่ตรวจพบในภาพเป้าหมาย (Detected Face)**")
+    detected_face = target_image[y:y+h, x:x+w]
+    st.image(detected_face, width=250)
