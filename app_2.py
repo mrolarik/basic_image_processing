@@ -1,3 +1,8 @@
+#image_options = {
+#    "Dog": "https://upload.wikimedia.org/wikipedia/commons/b/bf/Bulldog_inglese.jpg",
+#    "Cat": "https://cdn.britannica.com/39/226539-050-D21D7721/Portrait-of-a-cat-with-whiskers-visible.jpg"
+#}
+
 import streamlit as st
 from skimage import transform
 import numpy as np
