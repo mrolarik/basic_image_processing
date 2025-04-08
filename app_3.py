@@ -108,7 +108,7 @@ if 'selected_image' in st.session_state:
     # -------------------------------
     st.subheader("3️⃣ แยกวัตถุออกจากพื้นหลัง (Segmentation)")
 
-    seg_channel = st.radio("เลือก channel สำหรับ segmentation", ["Cr", "Cb"])
+    seg_channel = st.radio("เลือก channel สำหรับ segmentation", ["Cr", "Cb"], index=1)
 
     # เลือก channel ที่จะใช้
     channel_map = {"Cr": Cr, "Cb": Cb}
