@@ -4,7 +4,7 @@
 #}
 
 import streamlit as st
-from skimage import io, color, filters
+from skimage import color, filters
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -108,13 +108,13 @@ if 'selected_image' in st.session_state:
     # -------------------------------
     # 3️⃣ Segmentation จาก Cr Channel
     # -------------------------------
-    st.subheader("3️⃣ แยกสุนัขออกจากพื้นหลังด้วย Cr Channel (Segmentation)")
+    st.subheader("3️⃣ แยกวัตถุออกจากพื้นหลังด้วย Cr Channel (Segmentation)")
 
     # Normalize Cr เพื่อใช้ threshold
     cr_normalized = Cr / 255.0
     otsu_threshold = filters.threshold_otsu(cr_normalized)
 
-    # แสดง slider ปรับ threshold (ค่าเริ่มต้นคือ Otsu)
+    # Slider ปรับ threshold
     threshold_val = st.slider(
         "ปรับค่า threshold (เริ่มต้นจาก Otsu)",
         min_value=0.0,
@@ -128,6 +128,7 @@ if 'selected_image' in st.session_state:
     # สร้าง binary mask
     mask = cr_normalized > threshold_val
 
+    # แสดง Binary Mask
     st.markdown("**Binary Mask**")
     fig_mask, ax_mask = plt.subplots()
     ax_mask.imshow(mask, cmap='gray')
@@ -135,9 +136,9 @@ if 'selected_image' in st.session_state:
     ax_mask.axis("off")
     st.pyplot(fig_mask)
 
-    # สร้าง RGB mask สีแดง
+    # สร้าง RGB Mask สีแดง
     rgb_mask = np.zeros_like(image)
-    rgb_mask[:, :, 0] = mask * 255  # Red
+    rgb_mask[:, :, 0] = mask * 255
     rgb_mask[:, :, 1] = 0
     rgb_mask[:, :, 2] = 0
 
@@ -148,18 +149,17 @@ if 'selected_image' in st.session_state:
     ax_rgb_mask.axis("off")
     st.pyplot(fig_rgb_mask)
 
-    # แสดง segmented image แบบพื้นหลังโปร่งใส
-    st.subheader("ภาพที่ผ่านการแยกสุนัข (พื้นหลังโปร่งใส)")
+    # ✅ แสดงวัตถุที่แยกออกมาแบบ RGB (พื้นหลังดำ)
+    st.subheader("วัตถุที่ถูกแยกออกมา (RGB จริง จากภาพต้นฉบับ)")
 
-    # สร้าง alpha channel จาก mask
-    alpha_channel = (mask * 255).astype(np.uint8)
-
-    # สร้าง RGBA image
-    rgba_image = np.dstack((image, alpha_channel))
+    segmented_object = np.zeros_like(image)
+    for i in range(3):
+        segmented_object[:, :, i] = image[:, :, i] * mask
 
     fig_result, ax_result = plt.subplots()
-    ax_result.imshow(rgba_image)
-    ax_result.set_title("Segmented Image with Transparent Background")
+    ax_result.imshow(segmented_object)
+    ax_result.set_title("Segmented Object (RGB with Black Background)")
     ax_result.axis("off")
     st.pyplot(fig_result)
+
 
