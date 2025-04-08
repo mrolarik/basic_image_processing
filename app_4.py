@@ -25,7 +25,7 @@ def show_image_with_axes(image, title="Image"):
     st.pyplot(fig)
 
 # -------------------------------
-# ฟังก์ชัน pad ภาพให้ความสูงเท่ากัน (ไม่ resize)
+# ฟังก์ชัน pad ความสูง (แนวนอน) หรือความกว้าง (แนวตั้ง)
 # -------------------------------
 def pad_images_to_same_height(img1, img2):
     h1, h2 = img1.shape[0], img2.shape[0]
@@ -37,8 +37,18 @@ def pad_images_to_same_height(img1, img2):
         img1 = np.pad(img1, ((0, pad), (0, 0), (0, 0)), mode='constant', constant_values=0)
     return img1, img2
 
+def pad_images_to_same_width(img1, img2):
+    w1, w2 = img1.shape[1], img2.shape[1]
+    if w1 > w2:
+        pad = w1 - w2
+        img2 = np.pad(img2, ((0, 0), (0, pad), (0, 0)), mode='constant', constant_values=0)
+    elif w2 > w1:
+        pad = w2 - w1
+        img1 = np.pad(img1, ((0, 0), (0, pad), (0, 0)), mode='constant', constant_values=0)
+    return img1, img2
+
 # -------------------------------
-# URL ของภาพ
+# URLs ของภาพ
 # -------------------------------
 url_dog = "https://upload.wikimedia.org/wikipedia/commons/b/bf/Bulldog_inglese.jpg"
 url_cat = "https://www.alleycat.org/wp-content/uploads/2019/03/FELV-cat.jpg"
@@ -46,32 +56,32 @@ url_cat = "https://www.alleycat.org/wp-content/uploads/2019/03/FELV-cat.jpg"
 # -------------------------------
 # เริ่มต้น Streamlit App
 # -------------------------------
-st.title("การแสดงภาพด้วย matplotlib และการรวมภาพ")
+st.title("การแสดงและรวมภาพแนวนอน + แนวตั้ง")
 
-# 1️⃣ แสดงภาพเดียวจาก URL พร้อมแกน
-st.subheader("1️⃣ แสดงภาพสุนัข 1 รูป (พร้อมแกน X, Y)")
+# โหลดภาพ
 image1 = load_image_from_url(url_dog)
-show_image_with_axes(image1, "Dog Image")
-
-# 2️⃣ แสดงภาพสุนัขและแมวแบบแยกกัน
-st.subheader("2️⃣ แสดงภาพสุนัขและแมว (แยกกัน พร้อมแกน X, Y)")
 image2 = load_image_from_url(url_cat)
 
+# 1️⃣ แสดงภาพเดียว
+st.subheader("1️⃣ แสดงภาพสุนัข 1 รูป (พร้อมแกน X, Y)")
+show_image_with_axes(image1, "Dog Image")
+
+# 2️⃣ แสดงภาพสุนัขและแมว แยกคอลัมน์
+st.subheader("2️⃣ แสดงภาพสุนัขและแมว (แยกกัน พร้อมแกน X, Y)")
 cols = st.columns(2)
 with cols[0]:
     show_image_with_axes(image1, "Dog Image")
-
 with cols[1]:
     show_image_with_axes(image2, "Cat Image")
 
-# 3️⃣ รวมภาพสองภาพในแนวนอนโดยไม่ resize
-st.subheader("3️⃣ รวมภาพสุนัขและแมว (ต่อแนวนอน โดยไม่ resize)")
+# 3️⃣ รวมภาพในแนวนอน
+st.subheader("3️⃣ รวมภาพแนวนอน (ไม่ resize)")
+img1_h, img2_h = pad_images_to_same_height(image1, image2)
+combined_horizontal = np.hstack((img1_h, img2_h))
+show_image_with_axes(combined_horizontal, "Dog + Cat Combined (Horizontal)")
 
-# ทำ padding เพื่อให้ภาพสูงเท่ากัน
-image1_pad, image2_pad = pad_images_to_same_height(image1, image2)
-
-# ต่อภาพในแนวนอน
-combined_image = np.hstack((image1_pad, image2_pad))
-
-# แสดงภาพรวม
-show_image_with_axes(combined_image, "Dog + Cat Combined (Horizontal)")
+# 4️⃣ รวมภาพในแนวตั้ง
+st.subheader("4️⃣ รวมภาพแนวตั้ง (ไม่ resize)")
+img1_v, img2_v = pad_images_to_same_width(image1, image2)
+combined_vertical = np.vstack((img1_v, img2_v))
+show_image_with_axes(combined_vertical, "Dog + Cat Combined (Vertical)")
