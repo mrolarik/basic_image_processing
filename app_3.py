@@ -132,12 +132,12 @@ if 'selected_image' in st.session_state:
     # สร้าง binary mask
     mask = selected_norm > threshold_val
 
-    st.markdown("**Binary Mask**")
-    fig_mask, ax_mask = plt.subplots()
-    ax_mask.imshow(mask, cmap='gray')
-    ax_mask.set_title(f"Binary Mask จาก {seg_channel}")
-    ax_mask.axis("off")
-    st.pyplot(fig_mask)
+    #st.markdown("**Binary Mask**")
+    #fig_mask, ax_mask = plt.subplots()
+    #ax_mask.imshow(mask, cmap='gray')
+    #ax_mask.set_title(f"Binary Mask from {seg_channel}")
+    #ax_mask.axis("off")
+    #st.pyplot(fig_mask)
 
     # แสดง RGB mask (สีแดง)
     rgb_mask = np.zeros_like(image)
