@@ -10,7 +10,7 @@ from io import BytesIO
 from skimage import color, feature, transform
 
 # ---------------------------
-# ฟังก์ชันโหลดภาพจาก URL (พร้อมตรวจสอบว่าเป็นไฟล์ภาพ)
+# โหลดภาพจาก URL
 # ---------------------------
 def load_image_from_url(url):
     response = requests.get(url, stream=True)
@@ -30,7 +30,7 @@ template_url = "https://images.mlssoccer.com/image/private/t_editorial_landscape
 
 st.title("🔍 Template Matching with Manual Face Crop")
 
-# โหลดภาพพร้อมตรวจจับปัญหา
+# โหลดภาพ
 try:
     template_image = load_image_from_url(template_url)
     target_image = load_image_from_url(target_url)
@@ -39,10 +39,16 @@ except Exception as e:
     st.stop()
 
 # ---------------------------
-# แสดง template image และ crop manual
+# แสดง template image พร้อมแกน X, Y
 # ---------------------------
 st.subheader("📌 1. เลือกตำแหน่งใบหน้าจาก Template Image")
-st.image(template_image, caption="Template Image (ใช้ sliders ด้านล่าง)", use_container_width=True)
+
+fig1, ax1 = plt.subplots()
+ax1.imshow(template_image)
+ax1.set_title("Template Image with X, Y Axes")
+ax1.set_xlabel("X (Column)")
+ax1.set_ylabel("Y (Row)")
+st.pyplot(fig1)
 
 # ขนาดภาพ
 max_y, max_x = template_image.shape[0], template_image.shape[1]
@@ -53,16 +59,15 @@ y = st.slider("ตำแหน่ง Y (บน)", 0, max_y - 10, 100)
 w = st.slider("ความกว้าง (Width)", 10, max_x - x, 100)
 h = st.slider("ความสูง (Height)", 10, max_y - y, 100)
 
-# Crop ใบหน้าที่ต้องการ
+# Crop ใบหน้าที่เลือก
 face_crop = template_image[y:y+h, x:x+w]
-st.image(face_crop, caption="✅ ใบหน้าที่ใช้ค้นหา", width=250)
+st.image(face_crop, caption="✅ ใบหน้าที่คุณเลือกเพื่อใช้ค้นหา", width=250)
 
 # ---------------------------
 # Template Matching
 # ---------------------------
 st.subheader("🎯 2. ค้นหาใบหน้าที่คล้ายกันใน Target Image")
 
-# แปลงเป็น grayscale
 target_gray = color.rgb2gray(target_image)
 face_gray = color.rgb2gray(face_crop)
 
@@ -72,24 +77,24 @@ if face_gray.shape[1] > 100:
     new_shape = (int(face_gray.shape[0] * scale), 100)
     face_gray = transform.resize(face_gray, new_shape, anti_aliasing=True)
 
-# ทำ template matching
 result = feature.match_template(target_gray, face_gray)
 ij = np.unravel_index(np.argmax(result), result.shape)
 x_match, y_match = ij[::-1]
 h_match, w_match = face_gray.shape
 
-# แสดงภาพเป้าหมายพร้อมกรอบที่ตรวจพบ
-fig, ax = plt.subplots()
-ax.imshow(target_image)
+# แสดงตำแหน่งใบหน้าที่ตรวจพบ
+fig2, ax2 = plt.subplots()
+ax2.imshow(target_image)
 rect = plt.Rectangle((x_match, y_match), w_match, h_match, edgecolor='red', facecolor='none', linewidth=2)
-ax.add_patch(rect)
-ax.set_title("📍 ตำแหน่งใบหน้าที่ตรวจพบในภาพเป้าหมาย")
-ax.set_xlabel("X")
-ax.set_ylabel("Y")
-st.pyplot(fig)
+ax2.add_patch(rect)
+ax2.set_title("📍 ตำแหน่งใบหน้าที่ตรวจพบในภาพเป้าหมาย")
+ax2.set_xlabel("X")
+ax2.set_ylabel("Y")
+st.pyplot(fig2)
 
 # แสดงใบหน้าที่ตรวจพบ
 st.subheader("🧑‍🦱 ใบหน้าที่ตรวจพบใน Target Image")
 detected_face = target_image[y_match:y_match+h_match, x_match:x_match+w_match]
 st.image(detected_face, caption="ใบหน้าที่ตรวจพบ", width=250)
+
 
