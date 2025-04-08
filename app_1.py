@@ -36,6 +36,7 @@ image_options = {
     "Cat2": "https://cdn.britannica.com/39/226539-050-D21D7721/Portrait-of-a-cat-with-whiskers-visible.jpg"
 }
 
+st.header("Image Slicing with scikit-image")
 st.subheader("ภาพตัวอย่าง (เลือก 1 รูป)")
 
 # แสดง thumbnails แบบ 3 คอลัมน์
