@@ -107,7 +107,7 @@ st.subheader("🏆 3. ใบหน้าที่ตรงที่สุด 3 �
 
 # หาค่าความตรงกันทั้งหมด แล้วจัดลำดับ
 sorted_indices = np.argsort(result.ravel())[::-1]
-top_indices = sorted_indices[:3]
+top_indices = sorted_indices[:5]
 top_coords = np.array(np.unravel_index(top_indices, result.shape)).T
 
 cols = st.columns(3)
