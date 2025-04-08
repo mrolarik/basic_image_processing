@@ -112,6 +112,27 @@ ax2.imshow(target_image)
 for (y_match, x_match) in zip(*match_locations):
     rect = plt.Rectangle((x_match, y_match), w_match, h_match, edgecolor='red', facecolor='none', linewidth=2)
     ax2.add_patch(rect)
-ax2.set_title("_
+ax2.set_title("📍 ตำแหน่งทั้งหมดที่ตรวจพบ")
+ax2.set_xlabel("X")
+ax2.set_ylabel("Y")
+st.pyplot(fig2)
+
+# ---------------------------
+# แสดง Top-5 Match
+# ---------------------------
+st.subheader("🏆 4. วัตถุที่ตรงที่สุด 5 อันดับ")
+
+sorted_indices = np.argsort(result.ravel())[::-1]
+top_indices = sorted_indices[:5]
+top_coords = np.array(np.unravel_index(top_indices, result.shape)).T
+
+cols_top5 = st.columns(5)
+for i, (y_match, x_match) in enumerate(top_coords):
+    top_face = target_image[y_match:y_match+h_match, x_match:x_match+w_match]
+    with cols_top5[i]:
+        st.image(top_face, caption=f"อันดับ {i+1}", use_container_width=True)
+
+# แสดงจำนวนทั้งหมด
+st.success(f"🔎 ตรวจพบทั้งหมด: {len(match_locations[0])} ตำแหน่ง | แสดง Top 5 ที่ตรงที่สุด")
 
 
