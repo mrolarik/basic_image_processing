@@ -23,7 +23,7 @@ def load_image_from_url(url):
         raise ValueError(f"Error loading image: {e}")
 
 # ---------------------------
-# Template Image URLs
+# Template และ Target Image URLs
 # ---------------------------
 template_options = {
     "Template 1": "https://upload.wikimedia.org/wikipedia/commons/b/bf/Bulldog_inglese.jpg",
@@ -31,42 +31,60 @@ template_options = {
     "Template 3": "https://upload.wikimedia.org/wikipedia/commons/3/32/House_sparrow04.jpg"
 }
 
-# ---------------------------
-# Target Image URL
-# ---------------------------
-target_url = "https://image-cdn.essentiallysports.com/wp-content/uploads/2024-02-16T010328Z_1841023319_MT1USATODAY22532030_RTRMADP_3_MLS-PRESEASON-NEWELLS-OLD-BOYS-AT-INTER-MIAMI-CF.jpg"
+target_options = {
+    "Target 1": "https://image-cdn.essentiallysports.com/wp-content/uploads/2024-02-16T010328Z_1841023319_MT1USATODAY22532030_RTRMADP_3_MLS-PRESEASON-NEWELLS-OLD-BOYS-AT-INTER-MIAMI-CF.jpg",
+    "Target 2": "https://www.alleycat.org/wp-content/uploads/2019/03/FELV-cat.jpg",
+    "Target 3": "https://upload.wikimedia.org/wikipedia/commons/7/70/Sparrow_on_branch.jpg"
+}
 
+# ---------------------------
+# UI Header
+# ---------------------------
 st.title("🔍 Template Matching with Top-5 Matches")
+st.write("เลือกรูป Template และ Target จากตัวอย่างด้านล่าง")
 
 # ---------------------------
-# เลือก Template Image จาก Thumbnail
+# เลือก Template Image
 # ---------------------------
 st.subheader("🖼️ 1. เลือกรูป Template ที่ต้องการใช้")
-
 if "selected_template_url" not in st.session_state:
     st.session_state.selected_template_url = list(template_options.values())[0]
 
-cols = st.columns(3)
+cols1 = st.columns(3)
 for i, (label, url) in enumerate(template_options.items()):
-    with cols[i]:
+    with cols1[i]:
         st.image(url, caption=label, width=200)
-        if st.button(f"เลือก {label}"):
+        if st.button(f"เลือก {label}", key=f"template_{i}"):
             st.session_state.selected_template_url = url
+
+# ---------------------------
+# เลือก Target Image
+# ---------------------------
+st.subheader("🧭 2. เลือกรูป Target ที่ต้องการค้นหาในภาพ")
+if "selected_target_url" not in st.session_state:
+    st.session_state.selected_target_url = list(target_options.values())[0]
+
+cols2 = st.columns(3)
+for i, (label, url) in enumerate(target_options.items()):
+    with cols2[i]:
+        st.image(url, caption=label, width=200)
+        if st.button(f"เลือก {label}", key=f"target_{i}"):
+            st.session_state.selected_target_url = url
 
 # ---------------------------
 # โหลดภาพ
 # ---------------------------
 try:
     template_image = load_image_from_url(st.session_state.selected_template_url)
-    target_image = load_image_from_url(target_url)
+    target_image = load_image_from_url(st.session_state.selected_target_url)
 except Exception as e:
     st.error(f"เกิดข้อผิดพลาดในการโหลดภาพ: {e}")
     st.stop()
 
 # ---------------------------
-# Crop Template ด้วย Slider
+# Crop Template Image
 # ---------------------------
-st.subheader("✂️ 2. เลือกตำแหน่งวัตถุที่ต้องการใน Template Image")
+st.subheader("✂️ 3. เลือกตำแหน่งวัตถุใน Template Image")
 
 fig1, ax1 = plt.subplots()
 ax1.imshow(template_image)
@@ -76,7 +94,6 @@ ax1.set_ylabel("Y")
 st.pyplot(fig1)
 
 max_y, max_x = template_image.shape[:2]
-
 x = st.slider("ตำแหน่ง X (ซ้าย)", 0, max_x - 10, 100)
 y = st.slider("ตำแหน่ง Y (บน)", 0, max_y - 10, 100)
 w = st.slider("ความกว้าง (Width)", 10, max_x - x, 100)
@@ -88,25 +105,22 @@ st.image(face_crop, caption="✅ วัตถุที่คุณเลือ�
 # ---------------------------
 # Template Matching
 # ---------------------------
-st.subheader("🎯 3. ค้นหาวัตถุที่คล้ายกันในภาพเป้าหมาย")
+st.subheader("🎯 4. ค้นหาวัตถุที่คล้ายกันในภาพเป้าหมาย")
 
 target_gray = color.rgb2gray(target_image)
 face_gray = color.rgb2gray(face_crop)
 
-# Resize template ถ้ากว้างเกิน 100px
 if face_gray.shape[1] > 100:
     scale = 100 / face_gray.shape[1]
     new_shape = (int(face_gray.shape[0] * scale), 100)
     face_gray = transform.resize(face_gray, new_shape, anti_aliasing=True)
 
 result = feature.match_template(target_gray, face_gray)
-
-# ตั้ง Threshold
 threshold = st.slider("🎚️ Threshold สำหรับ Matching", 0.5, 1.0, 0.85, step=0.01)
 match_locations = np.where(result >= threshold)
+
 h_match, w_match = face_gray.shape
 
-# วาดกรอบทั้งหมด
 fig2, ax2 = plt.subplots()
 ax2.imshow(target_image)
 for (y_match, x_match) in zip(*match_locations):
@@ -118,9 +132,9 @@ ax2.set_ylabel("Y")
 st.pyplot(fig2)
 
 # ---------------------------
-# แสดง Top-5 Match
+# Top-5 Matches
 # ---------------------------
-st.subheader("🏆 4. วัตถุที่ตรงที่สุด 5 อันดับ")
+st.subheader("🏆 5. วัตถุที่ตรงที่สุด 5 อันดับ")
 
 sorted_indices = np.argsort(result.ravel())[::-1]
 top_indices = sorted_indices[:5]
@@ -132,7 +146,4 @@ for i, (y_match, x_match) in enumerate(top_coords):
     with cols_top5[i]:
         st.image(top_face, caption=f"อันดับ {i+1}", use_container_width=True)
 
-# แสดงจำนวนทั้งหมด
-st.success(f"🔎 ตรวจพบทั้งหมด: {len(match_locations[0])} ตำแหน่ง | แสดง Top 5 ที่ตรงที่สุด")
-
-
+st.success(f"🎯 ตรวจพบทั้งหมด: {len(match_locations[0])} ตำแหน่ง | แสดง Top 5 ที่ตรงที่สุด")
