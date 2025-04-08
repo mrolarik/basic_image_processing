@@ -3,9 +3,8 @@
 #    "Cat": "https://cdn.britannica.com/39/226539-050-D21D7721/Portrait-of-a-cat-with-whiskers-visible.jpg"
 #}
 
-
 import streamlit as st
-from skimage import io, color
+from skimage import io, color, filters
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -42,7 +41,7 @@ image_options = {
 # -------------------------------
 # ส่วนแสดง thumbnail
 # -------------------------------
-st.title("Image Processing: RGB to YCrCb Channel Viewer")
+st.title("Image Processing: RGB to YCrCb Channel Viewer + Segmentation")
 
 st.subheader("เลือกรูปภาพที่ต้องการประมวลผล")
 cols = st.columns(2)
@@ -105,3 +104,34 @@ if 'selected_image' in st.session_state:
         show_channel_image(Cb, "Cb (Blue-difference)")
         st.write("ตารางค่า Cb")
         st.dataframe(pd.DataFrame(Cb.astype(int)))
+
+    # -------------------------------
+    # 3️⃣ Segmentation จาก Cr Channel
+    # -------------------------------
+    st.subheader("3️⃣ แยกสุนัขออกจากพื้นหลังด้วย Cr Channel (Segmentation)")
+
+    # Normalize Cr เพื่อใช้ threshold
+    cr_normalized = Cr / 255.0
+    otsu_threshold = filters.threshold_otsu(cr_normalized)
+    st.markdown(f"ใช้ Otsu threshold = `{otsu_threshold:.3f}` บน Cr channel")
+
+    # สร้าง mask และแสดง
+    mask = cr_normalized > otsu_threshold
+
+    fig_mask, ax_mask = plt.subplots()
+    ax_mask.imshow(mask, cmap='gray')
+    ax_mask.set_title("Binary Mask จาก Cr")
+    ax_mask.axis("off")
+    st.pyplot(fig_mask)
+
+    # นำ mask ไปใช้กับภาพต้นฉบับ
+    segmented = np.zeros_like(image)
+    for i in range(3):
+        segmented[:, :, i] = image[:, :, i] * mask
+
+    st.subheader("ภาพที่ผ่านการแยกสุนัขออกจากพื้นหลัง")
+    fig_result, ax_result = plt.subplots()
+    ax_result.imshow(segmented)
+    ax_result.set_title("Segmented Image")
+    ax_result.axis("off")
+    st.pyplot(fig_result)
