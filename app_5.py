@@ -1,15 +1,3 @@
-#template_options = {
-#    "Template 1": "https://www.shutterstock.com/image-vector/rivne-ukraine-august-10-2023-260nw-2345412515.jpg",
-#    "Template 2": "https://kreafolk.com/cdn/shop/articles/new-balance-logo-design-history-and-evolution-kreafolk_6253baa3-d41d-4864-a810-1db6b98997c9.jpg",
-#    "Template 3": "https://upload.wikimedia.org/wikipedia/commons/3/32/House_sparrow04.jpg"
-#}
-
-#target_options = {
-#    "Target 1": "https://image-cdn.essentiallysports.com/wp-content/uploads/2024-02-16T010328Z_1841023319_MT1USATODAY22532030_RTRMADP_3_MLS-PRESEASON-NEWELLS-OLD-BOYS-AT-INTER-MIAMI-CF.jpg",
-#    "Target 2": "https://static.vecteezy.com/system/resources/previews/021/066/020/non_2x/set-of-popular-sportswear-logos-free-vector.jpg",
-#    "Target 3": "https://upload.wikimedia.org/wikipedia/commons/7/70/Sparrow_on_branch.jpg"
-#}
-
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
@@ -49,7 +37,7 @@ target_options = {
 # ---------------------------
 # ส่วนหัว
 # ---------------------------
-st.title("🔍 Multi-Scale Template Matching (Top-5 Results)")
+st.title("🔍 Multi-Scale Template Matching")
 
 # ---------------------------
 # เลือก Template Image
@@ -160,7 +148,7 @@ ax2.imshow(target_image)
 for (_, x, y, w, h, _) in all_matches:
     rect = plt.Rectangle((x, y), w, h, edgecolor='red', facecolor='none', linewidth=2)
     ax2.add_patch(rect)
-ax2.set_title("📍 ตำแหน่งทั้งหมดที่ตรวจพบ (หลายขนาด)")
+ax2.set_title("Locations Detected (Multi-scale)")
 ax2.set_xlabel("X")
 ax2.set_ylabel("Y")
 st.pyplot(fig2)
