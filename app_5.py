@@ -13,9 +13,17 @@ import os
 # ฟังก์ชันโหลดภาพจาก URL
 # ---------------------------
 def load_image_from_url(url):
-    response = requests.get(url)
-    img = Image.open(BytesIO(response.content)).convert("RGB")
-    return np.array(img)
+    response = requests.get(url, stream=True)
+    
+    if "image" not in response.headers.get("content-type", ""):
+        raise ValueError("URL does not contain a valid image.")
+    
+    try:
+        img = Image.open(BytesIO(response.content)).convert("RGB")
+        return np.array(img)
+    except Exception as e:
+        raise ValueError(f"Error loading image: {e}")
+
 
 # ---------------------------
 # URLs
@@ -26,8 +34,20 @@ template_url = "https://www.sportspro.com/wp-content/uploads/2023/08/Messi-Inter
 st.title("🔍 Face Detection (scikit-image) + Template Matching")
 
 # โหลดภาพ
-target_image = load_image_from_url(target_url)
-template_image = load_image_from_url(template_url)
+#target_image = load_image_from_url(target_url)
+#template_image = load_image_from_url(template_url)
+
+try:
+    template_image = load_image_from_url(template_url)
+except Exception as e:
+    st.error(f"เกิดข้อผิดพลาดในการโหลดภาพ template: {e}")
+    st.stop()
+
+try:
+    template_image = load_image_from_url(target_image)
+except Exception as e:
+    st.error(f"เกิดข้อผิดพลาดในการโหลดภาพ target: {e}")
+    st.stop()
 
 # แสดงภาพต้นฉบับ
 cols = st.columns(2)
