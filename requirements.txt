@@ -3,5 +3,3 @@ scikit-image
 matplotlib
 pillow 
 requests
-mediapipe
-
